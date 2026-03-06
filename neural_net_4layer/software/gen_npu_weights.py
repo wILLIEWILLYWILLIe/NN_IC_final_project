@@ -1,9 +1,14 @@
 import os
 
-L_SIZES = [(784, 128), (128, 64), (64, 32), (32, 10)]
+# Updated architecture: 784-32-16-16-10
+L_SIZES = [(784, 32), (32, 16), (16, 16), (16, 10)]
 LANES = 32
+DATA_WIDTH = 16
 
 def parse_txt(filename):
+    if not os.path.exists(filename):
+        print(f"Warning: {filename} not found.")
+        return []
     with open(filename, 'r') as f:
         return [line.strip() for line in f if line.strip()]
 
@@ -14,55 +19,59 @@ def get_weights_biases(layer_id):
     
     for n in range(out_size):
         w_row = parse_txt(f"../source/weights_and_biases/layer{layer_id}_neuron{n}_weights.txt")
+        if len(w_row) != in_size:
+            print(f"Warning: Layer {layer_id} Neuron {n} weight size mismatch. Expected {in_size}, got {len(w_row)}")
         weights.append(w_row)
     return weights, biases
 
 os.makedirs("../source/npu_weights", exist_ok=True)
 
-all_w = [get_weights_biases(l) for l in range(4)]
+all_w = [get_weights_biases(l) for l in range(len(L_SIZES))]
 
 for b in range(LANES):
     bank_w = []
     bank_b = []
     
-    # L0
-    out_size = L_SIZES[0][1]
-    passes = out_size // LANES
-    for p in range(passes):
-        n_idx = p * LANES + b
+    # Layer 0 (784 -> 32)
+    # 32 neurons fits in 1 pass across 32 lanes.
+    n_idx = b
+    if n_idx < L_SIZES[0][1]:
         bank_w.extend(all_w[0][0][n_idx])
         bank_b.append(all_w[0][1][n_idx])
-        
-    # L1
-    out_size = L_SIZES[1][1]
-    passes = out_size // LANES
-    for p in range(passes):
-        n_idx = p * LANES + b
+    else:
+        bank_w.extend(["0" * (DATA_WIDTH // 4)] * L_SIZES[0][0])
+        bank_b.append("0" * (DATA_WIDTH // 4))
+
+    # Layer 1 (32 -> 16)
+    n_idx = b
+    if n_idx < L_SIZES[1][1]:
         bank_w.extend(all_w[1][0][n_idx])
         bank_b.append(all_w[1][1][n_idx])
-        
-    # L2
-    out_size = L_SIZES[2][1]
-    passes = out_size // LANES
-    for p in range(passes):
-        n_idx = p * LANES + b
+    else:
+        bank_w.extend(["0" * (DATA_WIDTH // 4)] * L_SIZES[1][0])
+        bank_b.append("0" * (DATA_WIDTH // 4))
+
+    # Layer 2 (16 -> 16)
+    n_idx = b
+    if n_idx < L_SIZES[2][1]:
         bank_w.extend(all_w[2][0][n_idx])
         bank_b.append(all_w[2][1][n_idx])
-        
-    # L3
-    out_size = L_SIZES[3][1]
-    # L3 has 10 neurons, which is < 32 (1 pass)
+    else:
+        bank_w.extend(["0" * (DATA_WIDTH // 4)] * L_SIZES[2][0])
+        bank_b.append("0" * (DATA_WIDTH // 4))
+
+    # Layer 3 (16 -> 10)
     n_idx = b
-    if n_idx < out_size:
+    if n_idx < L_SIZES[3][1]:
         bank_w.extend(all_w[3][0][n_idx])
         bank_b.append(all_w[3][1][n_idx])
     else:
-        bank_w.extend(["00000000"] * L_SIZES[3][0])
-        bank_b.append("00000000")
+        bank_w.extend(["0" * (DATA_WIDTH // 4)] * L_SIZES[3][0])
+        bank_b.append("0" * (DATA_WIDTH // 4))
         
     with open(f"../source/npu_weights/bank{b}_weights.txt", "w") as f:
         f.write("\n".join(bank_w) + "\n")
     with open(f"../source/npu_weights/bank{b}_biases.txt", "w") as f:
         f.write("\n".join(bank_b) + "\n")
 
-print("NPU banks generated successfully from weights_and_biases directory!")
+print(f"NPU banks (16-bit) generated successfully for 784-32-16-16-10 architecture!")

@@ -29,11 +29,15 @@ package nn_pkg;
     parameter FIFO_DEPTH = 16;
     parameter DEBUG = 1;
 
-    // --- Dequantize function (match C arithmetic right shift exactly) ---
+    // --- Dequantize function with Saturation ---
     function automatic signed [DATA_WIDTH-1:0] dequantize;
-        input signed [2*DATA_WIDTH-1:0] product;
+        input signed [63:0] acc;
+        logic signed [63:0] shifted;
         begin
-            dequantize = product >>> BITS;
+            shifted = acc >>> BITS;
+            if (shifted > 32767)       dequantize = 32767;
+            else if (shifted < -32768) dequantize = -32768;
+            else                       dequantize = shifted[DATA_WIDTH-1:0];
         end
     endfunction
 

@@ -43,12 +43,12 @@ module nn_top
         end
     end
 
-    // Constants for memory map
+    // Constants for memory map (16-bit data)
     localparam ACT_ADDR_IN  = 10'd0;    // size 784
-    localparam ACT_ADDR_L0  = 10'd784;  // size 128
-    localparam ACT_ADDR_L1  = 10'd912;  // size 64
-    localparam ACT_ADDR_L2  = 10'd976;  // size 32
-    localparam ACT_ADDR_L3  = 10'd1008; // size 10
+    localparam ACT_ADDR_L0  = 10'd784;  // size 32
+    localparam ACT_ADDR_L1  = 10'd816;  // size 16
+    localparam ACT_ADDR_L2  = 10'd832;  // size 16
+    localparam ACT_ADDR_L3  = 10'd848;  // size 10
 
     logic [9:0] src_offsets [4];
     logic [9:0] dst_offsets [4];
@@ -58,8 +58,8 @@ module nn_top
 
     assign src_offsets = '{ACT_ADDR_IN, ACT_ADDR_L0, ACT_ADDR_L1, ACT_ADDR_L2};
     assign dst_offsets = '{ACT_ADDR_L0, ACT_ADDR_L1, ACT_ADDR_L2, ACT_ADDR_L3};
-    assign input_sizes = '{10'd784, 10'd128, 10'd64, 10'd32};
-    assign num_passes  = '{3'd4, 3'd2, 3'd1, 3'd1};
+    assign input_sizes = '{10'd784, 10'd32, 10'd16, 10'd16};
+    assign num_passes  = '{3'd1, 3'd1, 3'd1, 3'd1};
     assign layer_relu  = '{1'b1, 1'b1, 1'b1, 1'b0};
 
     // --- MAC Array ---
@@ -139,17 +139,19 @@ module nn_top
     assign global_w_addr = w_addr_r;
 
     always_comb begin
-        case (layer_idx)
-            0: mac_bias_addr = {1'b0, pass_idx};
-            1: mac_bias_addr = 4 + {1'b0, pass_idx};
-            2: mac_bias_addr = 6 + {1'b0, pass_idx};
-            3: mac_bias_addr = 7;
-            default: mac_bias_addr = 0;
-        endcase
+        mac_bias_addr = {2'b0, layer_idx};
     end
 
     logic [5:0] drain_limit;
-    assign drain_limit = (layer_idx == 3) ? 6'd10 : 6'd32;
+    always_comb begin
+        case (layer_idx)
+            0: drain_limit = 6'd32;
+            1: drain_limit = 6'd16;
+            2: drain_limit = 6'd16;
+            3: drain_limit = 6'd10;
+            default: drain_limit = 6'd32;
+        endcase
+    end
 
     always_comb begin
         state_next     = state;

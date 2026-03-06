@@ -4,15 +4,15 @@
 
 
 // quantization
-#define BITS            14
+#define BITS            12
 #define QUANT_VAL       (1 << BITS)
 
 // Neural Network
 #define NUM_INPUTS  784
 #define NUM_OUTPUTS 10
 #define NUM_LAYERS  4
-#define MAX_WEIGHTS 100352
-#define MAX_NEURONS 128
+#define MAX_WEIGHTS 30000
+#define MAX_NEURONS 32
 
 
 // ──────────────────────────────────────────────────────────────────
@@ -23,15 +23,20 @@
 // ──────────────────────────────────────────────────────────────────
 void neuron(int *inputs, int *weights, int bias, int input_size, int *output)
 {
-    long long acc = (long long)bias;   // use 64-bit to avoid overflow
+    long long acc = (long long)bias << BITS; // Scale bias to match product range (Q24)
     for (int i = 0; i < input_size; i++)
     {
-        acc += ((long long)inputs[i] * (long long)weights[i]) >> BITS;
+        acc += (long long)inputs[i] * weights[i]; // Q12 * Q12 = Q24
     }
-    // Clamp to 32-bit range
-    if (acc > 0x7FFFFFFF)  acc = 0x7FFFFFFF;
-    if (acc < -0x80000000LL) acc = -0x80000000LL;
-    *output = (int)acc;   // Q14 output
+    
+    // Dequantize (Shift once after accumulation)
+    long long shifted = acc >> BITS;
+    
+    // Saturation (16-bit signed)
+    if (shifted > 32767)  shifted = 32767;
+    if (shifted < -32768) shifted = -32768;
+    
+    *output = (int)shifted;
 }
 
 void relu(int *input, int size, int *output)
@@ -47,7 +52,7 @@ int argmax(int *input, int size)
     int max_val = input[0];
     int index = 0;
 
-    printf("Output layer values (Q14):\n");
+    printf("Output layer values (Q12):\n");
     for (int i = 0; i < size; i++)
         printf("  Class %d: %d  (float ~%.4f)\n", i, input[i],
                (double)input[i] / QUANT_VAL);
@@ -104,8 +109,8 @@ int main()
     int outputs[NUM_OUTPUTS];
     int weights[NUM_LAYERS][MAX_WEIGHTS];
     int biases[NUM_LAYERS][MAX_NEURONS];
-    int layer_in_sizes[NUM_LAYERS]  = {784, 128, 64, 32};
-    int layer_out_sizes[NUM_LAYERS] = {128, 64, 32, 10};
+    int layer_in_sizes[NUM_LAYERS]  = {784, 32, 16, 16};
+    int layer_out_sizes[NUM_LAYERS] = {32, 16, 16, 10};
 
     // 1. Load Inputs (Q14 hex format)
     printf("Loading %d inputs from ../source/x_test.txt ...\n", NUM_INPUTS);
@@ -118,7 +123,7 @@ int main()
             printf("ERROR: Failed to read input %d\n", i);
             return 1;
         }
-        inputs[i] = (int)tmp;   // reinterpret as signed
+        inputs[i] = (short)tmp;   // correctly sign-extend 16-bit hex to 32-bit int
     }
     fclose(f_in);
 
@@ -138,7 +143,7 @@ int main()
                 printf("ERROR: Failed reading weight %d in Layer %d\n", i, l);
                 return 1;
             }
-            weights[l][i] = (int)tmp;
+            weights[l][i] = (short)tmp;
         }
 
         for (int i = 0; i < layer_out_sizes[l]; i++) {
@@ -147,7 +152,7 @@ int main()
                 printf("ERROR: Failed reading bias %d in Layer %d\n", i, l);
                 return 1;
             }
-            biases[l][i] = (int)tmp;
+            biases[l][i] = (short)tmp;
         }
         fclose(f);
         printf("  Loaded %d weights + %d biases\n", num_w, layer_out_sizes[l]);
