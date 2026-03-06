@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*~
+.DS_Store
+
+# Data
+python_train/data/
+
+# Compiled C binaries
+#neural_net_4layer/neural_net
+#neural_net/neural_net
+
+# (Optional) If you don't want to track generated txt files, uncomment these:
+# neural_net_4layer/*.txt
+# neural_net_4layer/test_samples/*.txt
