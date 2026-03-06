@@ -269,3 +269,30 @@ done
 - **損失函數 (Loss):** CrossEntropyLoss
 - **浮點數測試準確率:** ~97.5%
 - **量化測試準確率:** 經過針對所有 0 到 9 十個數字類別的獨立測試
+272: 
+273: ---
+274: 
+275: ## ASIC 合成優化與權重初始化方案 (ASIC Synthesis & Weight Initialization)
+276: 
+277: 在進行 ASIC 合成時，我們針對 Cadence Genus 的特性進行了關鍵優化，解決了硬體常數初始化的相容性問題。
+278: 
+279: ### 1. 權重產生腳本 (`gen_npu_weights.py`) 的調整
+280: - **從檔案到 Package**: 原本使用 `$readmemh` 讀取外部 `.txt` 檔的方法在 ASIC 合成中不支援（被視為未驅動訊號）。
+281: - **自動生成 `weight_pkg.sv`**: 修改腳本將所有權重與偏差值轉換為 SystemVerilog 的 `parameter` 陣列。
+282: - **巢狀陣列格式**: 為了配合資源共享架構，權重被格式化為 `[LAYER][BANK][ADDR]` 的 16-bit Hex 巢狀陣列，確保工具能精確識別常數。
+283: 
+284: ### 2. RTL 常數傳遞優化
+285: - **直接硬連線 (Hard-wired)**: 在 `npu_mac.sv` 中導入 `weight_pkg`，並直接在 `always_ff` block 中索引參數。
+286: - **常數傳播 (Constant Propagation)**: 這讓 Genus 能夠在合成階段將權重直接優化為門級組合邏輯（ROM-like logic），並進行大規模的暫存器合併（Register Merging），大幅降低了晶片面積。
+287: 
+288: ### 3. 合成結果總結 (Synthesis Results Summary)
+289: - **合成工具**: Cadence Genus (使用 NangateOpenCellLibrary 45nm)
+290: - **合成總耗時**: **18.4 分鐘** (1,103 秒)。
+291: - **面積 (Area)**: **654,006 µm²** (177,266 cells)。
+292: - **時序 (Timing/Slack)**: **+5,044 ps (MET)**。
+293:   - 在 100MHz (10ns) 頻率下有極大的時序裕量。
+294: - **功耗 (Power)**: **84.6 mW**。
+295:   - 動態功耗：76.9 mW (91%)。
+296:   - 洩漏功耗：7.7 mW (9%)。
+297: 
+298: 透過此方案，我們在不犧牲軟體精度的前提下，成功实现了高效率的 ASIC 邏輯合成。

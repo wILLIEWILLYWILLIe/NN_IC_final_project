@@ -102,31 +102,24 @@ endmodule
 
 module mac_lane
     import nn_pkg::*;
+    import weight_pkg::*;
 #(
     parameter LANE_ID = 0
 )(
     input  logic clk, reset,
     input  logic start_in, valid_in, last_in, relu_en,
-    input  logic signed [DATA_WIDTH-1:0] data_in,     // Delayed 1-cycle from buffer automatically by BRAM
-    input  logic [11:0] weight_addr,                  // Asserts cycle 0 -> mem cycle 1
-    input  logic [3:0]  bias_addr,                    // Asserts cycle 0 -> mem cycle 1
+    input  logic signed [DATA_WIDTH-1:0] data_in,
+    input  logic [11:0] weight_addr,
+    input  logic [3:0]  bias_addr,
     output logic valid_out,
     output logic signed [DATA_WIDTH-1:0] out
 );
     logic signed [DATA_WIDTH-1:0] weight_out, bias_out;
     
-    // BRAMs
-    logic signed [DATA_WIDTH-1:0] weight_mem [0:4095];
-    logic signed [DATA_WIDTH-1:0] bias_mem   [0:15]; 
-
-    initial begin
-        $readmemh($sformatf("../../../source/npu_weights/bank%0d_weights.txt", LANE_ID), weight_mem);
-        $readmemh($sformatf("../../../source/npu_weights/bank%0d_biases.txt", LANE_ID), bias_mem);
-    end
-
+    // Synchronous read (ROM inference from parameters)
     always_ff @(posedge clk) begin
-        weight_out <= weight_mem[weight_addr];
-        bias_out   <= bias_mem[bias_addr];
+        weight_out <= ALL_WEIGHTS[LANE_ID][weight_addr];
+        bias_out   <= ALL_BIASES[LANE_ID][bias_addr];
     end
 
     // Delay controls by 1 cycle to match BRAM read latency

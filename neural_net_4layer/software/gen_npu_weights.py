@@ -41,6 +41,9 @@ os.makedirs("../source/npu_weights", exist_ok=True)
 
 all_w = [get_weights_biases(l) for l in range(len(L_SIZES))]
 
+all_banks_w = []
+all_banks_b = []
+
 for b in range(LANES):
     bank_w = []
     bank_b = []
@@ -84,4 +87,38 @@ for b in range(LANES):
     with open(f"../source/npu_weights/bank{b}_biases.txt", "w") as f:
         f.write("\n".join(bank_b) + "\n")
 
-print(f"NPU banks (16-bit) generated successfully for 784-32-16-16-10 architecture!")
+    all_banks_w.append(bank_w)
+    all_banks_b.append(bank_b)
+
+# Generate SystemVerilog Package for Synthesis
+pkg_path = "../hardware/frontend/sv/weight_pkg.sv"
+total_w = sum(l[0] for l in L_SIZES) # 784 + 32 + 16 + 16 = 848
+total_b = len(L_SIZES)              # 4
+
+with open(pkg_path, "w") as f:
+    f.write("// =============================================================\n")
+    f.write("// Generated Weight Package for Synthesis\n")
+    f.write("// =============================================================\n")
+    f.write("package weight_pkg;\n")
+    f.write("    import nn_pkg::*;\n\n")
+    
+    # Weights
+    f.write(f"    parameter signed [DATA_WIDTH-1:0] ALL_WEIGHTS [32][{total_w}] = '{{\n")
+    for b in range(LANES):
+        formatted_w = [f"16'h{w}" for w in all_banks_w[b]]
+        f.write("        '{" + ", ".join(formatted_w) + "}")
+        if b < LANES - 1: f.write(",")
+        f.write("\n")
+    f.write("    };\n\n")
+
+    # Biases
+    f.write(f"    parameter signed [DATA_WIDTH-1:0] ALL_BIASES [32][{total_b}] = '{{\n")
+    for b in range(LANES):
+        formatted_b = [f"16'h{b_val}" for b_val in all_banks_b[b]]
+        f.write("        '{" + ", ".join(formatted_b) + "}")
+        if b < LANES - 1: f.write(",")
+        f.write("\n")
+    f.write("    };\n")
+    f.write("endpackage\n")
+
+print(f"NPU banks (16-bit) and SV package generated successfully!")

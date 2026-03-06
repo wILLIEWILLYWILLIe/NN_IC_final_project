@@ -17,10 +17,12 @@ UVM_XFLAGS := -sv -uvm -access +rwc -timescale 1ns/1ps -64bit -coverage all -cov
 
 # Package
 PKG      := $(SV_DIR)/nn_pkg.sv
+W_PKG    := $(SV_DIR)/weight_pkg.sv
 UVM_PKG  := $(UVM_DIR)/my_uvm_pkg.sv
 
 # Direct Testbench Source files
 ALL_SRC  := $(PKG) \
+            $(W_PKG) \
             $(SV_DIR)/fifo.sv \
             $(SV_DIR)/npu_mac.sv \
             $(SV_DIR)/argmax.sv \
@@ -29,6 +31,7 @@ ALL_SRC  := $(PKG) \
 
 # UVM Testbench Source files
 UVM_SRC  := $(PKG) \
+            $(W_PKG) \
             $(SV_DIR)/fifo.sv \
             $(SV_DIR)/npu_mac.sv \
             $(SV_DIR)/argmax.sv \
