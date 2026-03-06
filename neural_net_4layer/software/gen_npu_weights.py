@@ -14,14 +14,27 @@ def parse_txt(filename):
 
 def get_weights_biases(layer_id):
     in_size, out_size = L_SIZES[layer_id]
+    filename = f"../source/layer_{layer_id}_weights_biases.txt"
+    tokens = parse_txt(filename)
+
+    if not tokens:
+        print(f"Warning: No data found in {filename}.")
+        return [], []
+
+    biases = tokens[:out_size]
+    weights_flat = tokens[out_size:]
+
     weights = []
-    biases = parse_txt(f"../source/weights_and_biases/layer{layer_id}_biases.txt")
-    
     for n in range(out_size):
-        w_row = parse_txt(f"../source/weights_and_biases/layer{layer_id}_neuron{n}_weights.txt")
+        start_idx = n * in_size
+        end_idx = start_idx + in_size
+        w_row = weights_flat[start_idx:end_idx]
         if len(w_row) != in_size:
             print(f"Warning: Layer {layer_id} Neuron {n} weight size mismatch. Expected {in_size}, got {len(w_row)}")
+            # Pad with zeros if mismatch, or handle error as appropriate
+            w_row.extend(["0" * (DATA_WIDTH // 4)] * (in_size - len(w_row)))
         weights.append(w_row)
+    
     return weights, biases
 
 os.makedirs("../source/npu_weights", exist_ok=True)

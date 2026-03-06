@@ -7,7 +7,7 @@ def main():
     os.makedirs("../hardware/frontend/sv", exist_ok=True)
     
     for L, (in_size, out_size) in enumerate(layer_sizes):
-        filename = f"../source/weights_and_biases/layer_{L}_weights_biases.txt"
+        filename = f"../source/layer_{L}_weights_biases.txt"
         with open(filename, "r") as f:
             tokens = f.read().split()
         
