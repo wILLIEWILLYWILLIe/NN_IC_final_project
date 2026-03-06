@@ -1,0 +1,4 @@
+source /vol/eecs392/env/modelsim.env
+source /vol/eecs392/env/synplify.env
+source /vol/eecs392/env/questasim.env
+

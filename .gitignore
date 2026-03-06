@@ -14,3 +14,13 @@ python_train/data/
 # (Optional) If you don't want to track generated txt files, uncomment these:
 # neural_net_4layer/*.txt
 # neural_net_4layer/test_samples/*.txt
+
+# HW Simulation Artifacts
+**/xcelium.d/*
+**/INCA_libs/*
+**/xrun.log
+**/xrun.history
+**/waves.shm/*
+**/*.key
+**/work/
+**/cov_work/
