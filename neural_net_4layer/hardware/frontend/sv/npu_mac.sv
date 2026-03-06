@@ -33,8 +33,13 @@ module mac_cell
             data_r <= data_in;
             weight_r <= weight_in;
             if (start && valid_in) begin
-                bias_r <= bias_in; // Sample bias once at start
-                if (DEBUG) $display("TIME=%0t | LANE=%0d | START | data_in=%h, weight_in=%h, bias_in=%h", $time, LANE_ID, data_in, weight_in, bias_in);
+                bias_r <= bias_in;
+                // The original $display line was incomplete/malformed in the instruction.
+                // Assuming it was meant to be a debug print for the start of a new accumulation.
+                // The instruction's provided snippet for this part was:
+                // .bias_in(bias_mem[bias_addr]),
+                // splay("TIME=%0t | LANE=%0d | LAYER=%0d | PASS=%0d | START | data_in=0x%h, weight_in=0x%h, bias_in=0x%h", 
+                //                  $time, LANE_ID, (bias_addr), 0, data_in, weight_in, bias_in);
             end
         end
     end
@@ -68,7 +73,7 @@ module mac_cell
         end else begin
             last_r3 <= 0; // default
             if (valid_r2) begin
-                if (start_r2) acc <= ($signed(bias_r) <<< BITS) + $signed(product_r);
+                if (start_r2) acc <= (64'(bias_r) <<< BITS) + $signed(product_r);
                 else          acc <= acc + $signed(product_r);
                 last_r3 <= last_r2;
                 relu_en_r3 <= relu_en_r2;
@@ -90,8 +95,6 @@ module mac_cell
                 if (!relu_en_r3) out <= dq;
                 else if (dq > 0) out <= dq;
                 else out <= '0;
-                // DEBUG
-                $display("MAC Output: acc=%0d, dq=%0d, out=%0d", acc, dq, (!relu_en_r3 || dq>0)? dq : 0);
             end
         end
     end
@@ -117,47 +120,8 @@ module mac_lane
     logic signed [DATA_WIDTH-1:0] bias_mem   [0:15]; 
 
     initial begin
-        // Initialize with 0 to avoid 'x' for unused neurons/weights
-        for (int i=0; i<4096; i++) weight_mem[i] = '0;
-        for (int i=0; i<16; i++)   bias_mem[i]   = '0;
-
-        // --- Layer 0 (784 in -> 32 neurons) ---
-        $readmemh($sformatf("../../../source/weights_and_biases/layer0_neuron%0d_weights.txt", LANE_ID), weight_mem, 0, 783);
-        begin
-            logic [DATA_WIDTH-1:0] tmp_biases [0:31];
-            $readmemh("../../../source/weights_and_biases/layer0_biases.txt", tmp_biases);
-            bias_mem[0] = tmp_biases[LANE_ID];
-        end
-
-        // --- Layer 1 (32 in -> 16 neurons) ---
-        if (LANE_ID < 16) begin
-            $readmemh($sformatf("../../../source/weights_and_biases/layer1_neuron%0d_weights.txt", LANE_ID), weight_mem, 784, 815);
-            begin
-                logic [DATA_WIDTH-1:0] tmp_biases [0:15];
-                $readmemh("../../../source/weights_and_biases/layer1_biases.txt", tmp_biases);
-                bias_mem[1] = tmp_biases[LANE_ID];
-            end
-        end
-
-        // --- Layer 2 (16 in -> 16 neurons) ---
-        if (LANE_ID < 16) begin
-            $readmemh($sformatf("../../../source/weights_and_biases/layer2_neuron%0d_weights.txt", LANE_ID), weight_mem, 816, 831);
-            begin
-                logic [DATA_WIDTH-1:0] tmp_biases [0:15];
-                $readmemh("../../../source/weights_and_biases/layer2_biases.txt", tmp_biases);
-                bias_mem[2] = tmp_biases[LANE_ID];
-            end
-        end
-
-        // --- Layer 3 (16 in -> 10 neurons) ---
-        if (LANE_ID < 10) begin
-            $readmemh($sformatf("../../../source/weights_and_biases/layer3_neuron%0d_weights.txt", LANE_ID), weight_mem, 832, 847);
-            begin
-                logic [DATA_WIDTH-1:0] tmp_biases [0:9];
-                $readmemh("../../../source/weights_and_biases/layer3_biases.txt", tmp_biases);
-                bias_mem[3] = tmp_biases[LANE_ID];
-            end
-        end
+        $readmemh($sformatf("../../../source/npu_weights/bank%0d_weights.txt", LANE_ID), weight_mem);
+        $readmemh($sformatf("../../../source/npu_weights/bank%0d_biases.txt", LANE_ID), bias_mem);
     end
 
     always_ff @(posedge clk) begin

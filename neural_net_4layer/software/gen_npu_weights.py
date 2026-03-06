@@ -21,8 +21,9 @@ def get_weights_biases(layer_id):
         print(f"Warning: No data found in {filename}.")
         return [], []
 
-    biases = tokens[:out_size]
-    weights_flat = tokens[out_size:]
+    num_w = in_size * out_size
+    weights_flat = tokens[:num_w]
+    biases = tokens[num_w:]
 
     weights = []
     for n in range(out_size):
@@ -31,8 +32,7 @@ def get_weights_biases(layer_id):
         w_row = weights_flat[start_idx:end_idx]
         if len(w_row) != in_size:
             print(f"Warning: Layer {layer_id} Neuron {n} weight size mismatch. Expected {in_size}, got {len(w_row)}")
-            # Pad with zeros if mismatch, or handle error as appropriate
-            w_row.extend(["0" * (DATA_WIDTH // 4)] * (in_size - len(w_row)))
+            w_row.extend(["0000"] * (in_size - len(w_row)))
         weights.append(w_row)
     
     return weights, biases
@@ -46,41 +46,38 @@ for b in range(LANES):
     bank_b = []
     
     # Layer 0 (784 -> 32)
-    # 32 neurons fits in 1 pass across 32 lanes.
-    n_idx = b
-    if n_idx < L_SIZES[0][1]:
-        bank_w.extend(all_w[0][0][n_idx])
-        bank_b.append(all_w[0][1][n_idx])
+    # 32 neurons mapped to 32 lanes.
+    if b < L_SIZES[0][1]:
+        bank_w.extend(all_w[0][0][b])
+        bank_b.append(all_w[0][1][b])
     else:
-        bank_w.extend(["0" * (DATA_WIDTH // 4)] * L_SIZES[0][0])
-        bank_b.append("0" * (DATA_WIDTH // 4))
+        bank_w.extend(["0000"] * L_SIZES[0][0])
+        bank_b.append("0000")
 
     # Layer 1 (32 -> 16)
-    n_idx = b
-    if n_idx < L_SIZES[1][1]:
-        bank_w.extend(all_w[1][0][n_idx])
-        bank_b.append(all_w[1][1][n_idx])
+    # 16 neurons mapped to first 16 lanes. Remaining 16 lanes get 0s for this layer's slice.
+    if b < L_SIZES[1][1]:
+        bank_w.extend(all_w[1][0][b])
+        bank_b.append(all_w[1][1][b])
     else:
-        bank_w.extend(["0" * (DATA_WIDTH // 4)] * L_SIZES[1][0])
-        bank_b.append("0" * (DATA_WIDTH // 4))
+        bank_w.extend(["0000"] * L_SIZES[1][0])
+        bank_b.append("0000")
 
     # Layer 2 (16 -> 16)
-    n_idx = b
-    if n_idx < L_SIZES[2][1]:
-        bank_w.extend(all_w[2][0][n_idx])
-        bank_b.append(all_w[2][1][n_idx])
+    if b < L_SIZES[2][1]:
+        bank_w.extend(all_w[2][0][b])
+        bank_b.append(all_w[2][1][b])
     else:
-        bank_w.extend(["0" * (DATA_WIDTH // 4)] * L_SIZES[2][0])
-        bank_b.append("0" * (DATA_WIDTH // 4))
+        bank_w.extend(["0000"] * L_SIZES[2][0])
+        bank_b.append("0000")
 
     # Layer 3 (16 -> 10)
-    n_idx = b
-    if n_idx < L_SIZES[3][1]:
-        bank_w.extend(all_w[3][0][n_idx])
-        bank_b.append(all_w[3][1][n_idx])
+    if b < L_SIZES[3][1]:
+        bank_w.extend(all_w[3][0][b])
+        bank_b.append(all_w[3][1][b])
     else:
-        bank_w.extend(["0" * (DATA_WIDTH // 4)] * L_SIZES[3][0])
-        bank_b.append("0" * (DATA_WIDTH // 4))
+        bank_w.extend(["0000"] * L_SIZES[3][0])
+        bank_b.append("0000")
         
     with open(f"../source/npu_weights/bank{b}_weights.txt", "w") as f:
         f.write("\n".join(bank_w) + "\n")

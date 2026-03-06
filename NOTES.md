@@ -128,7 +128,40 @@ assign relu_out = signed_input[31] ? 32'd0 : signed_input;
 10 個數字全部測試通過 (TEST PASSED)！
 100% Bit-True：硬體模擬跑出來的分數 (例如 Class 0 是 205637，Class 8 是 143341)，跟 C 語言一模一樣，算無遺漏，沒有任何小數點截斷誤差了！
 UVM Testbench make sim 也跑出 0 UVM_ERROR 與 100% 代碼/預測覆蓋率！
-我也已經把這些大發現 (FIFO FWFT 修正、Out-of-Bounds Poison、32-Lane TDM 架構) 詳細記錄進 硬體除錯紀錄 區塊了。 目前的軟硬體功能都已經非常穩固，準備前進 Synthesis！
+也已經把這些大發現 (FIFO FWFT 修正、Out-of-Bounds Poison、32-Lane TDM 架構) 詳細記錄進 硬體除錯紀錄 區塊了。 目前的軟硬體功能都已經非常穩固，準備前進 Synthesis！
+
+---
+
+## 16-bit Q12 NPU 實作與精度調優 (100% Accuracy Achievement)
+
+為了平衡模型預測力與硬體資源（權重總量需 < 50 萬 bits），我們在現有的 4 層架構基礎上，將量化方案從 32-bit Q14 調整為更精簡且高效的 **16-bit Q12**，並成功在硬體模擬中達成 **10/10 (100%)** 的準確率。
+
+### 1. 16-bit Q12 量化方案
+- **量化參數**：`BITS = 12`, `DATA_WIDTH = 16`。
+- **神經網路架構**：`784 -> 32 -> 16 -> 16 -> 10`。
+- **權重存儲優化**：此架構下的總權重與 Bias 位元數約為 41 萬 bits，符合硬體 handoff 的嚴格規範。
+
+### 2. 關鍵 Bug 修復與精度對齊
+在調適 RTL 與 C 語言參考模型的過程中，解決了以下三個核心問題：
+
+#### (A) Bias 縮放位移的截斷 Bug (Sign-Extension Truncation)
+- **問題描述**：Bias (Q12) 需要左移 12 位元以對齊乘法後的 Q24 比例。在原始 SV 代碼中，位移操作 `{bias_r <<< 12}` 是在 16-bit 本地環境下執行的，導致位移後的高位元被截斷，造成累加錯誤。
+- **修復方式**：在 `mac_cell` 內進行位移時，強制將 Bias 轉型為 64-bit 內容：`{64'(bias_r) <<< BITS}`，確保數值能完整擴展至 64 位元累加器。
+
+#### (B) 權重與 Bias 的檔案順序反轉 (Parsing Inconsistency)
+- **問題描述**：驗證發現訓練輸出的 `weights_biases.txt` 檔案格式是「先存儲該層所有權重，最後再存儲 Bias」。原有的權重轉換腳本 `gen_npu_weights.py` 誤採用的「先 Bias 後權重」的讀取邏輯。
+- **修復方式**：同步更新 Python 腳本與 C 語言參考模型，統一採用「權重、接著 Bias」的讀取順序，解決了數值讀取發生「平移毀滅 (Shifting Poison)」的問題。
+
+#### (C) 資源共享架構下的連續位址計演算法 (Sequential Addressing)
+- **問題描述**：在 32-Lane 分時多工結構中，每一層的神經元數量不同 (32, 16, 16, 10)。若 FSM 在每一層都將位址歸零，將無法從 1D 權重映射中抓到正確的層偏移。
+- **修復方式**：在 `nn_top.sv` 中實作了全域偏移量 `w_offsets = {0, 784, 816, 832}`。FSM 定址邏輯改為 `w_offsets[layer_idx] + in_cnt`。
+
+### 3. 測試驗證結果
+- **C Reference**: 達成 10/10 100% 準確率。
+- **RTL Simulation**: `make test_all` 跑出的分數（Max Score）與 C 程式產出的 Q12 數值**完全一致 (Bit-True Match)**。
+- **UVM 支援**: 成功運行 `make uvm_sim`，在 UVM 指令下確認單次推理邏輯正確且 Latency 穩定。
+
+---
 
 ### UVM 驗證除錯紀錄 (UVM Verification Debugging)
 

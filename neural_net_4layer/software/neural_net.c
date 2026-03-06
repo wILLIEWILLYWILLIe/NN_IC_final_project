@@ -125,6 +125,7 @@ int main() {
       }
       biases[l][i] = (short)tmp;
     }
+    printf("Layer %d First Bias (Q12): %d (0x%04x)\n", l, biases[l][0], (unsigned short)biases[l][0]);
     fclose(f);
   }
 

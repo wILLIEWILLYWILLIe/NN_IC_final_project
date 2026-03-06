@@ -17,15 +17,12 @@ module nn_top
     // --- Input FIFO ---
     logic                          fifo_rd_en;
     logic signed [DATA_WIDTH-1:0]  fifo_dout;
-    logic signed [DATA_WIDTH-1:0]  fifo_dout_reg;
     logic                          fifo_empty;
 
     fifo #(.FIFO_DATA_WIDTH(DATA_WIDTH), .FIFO_BUFFER_SIZE(1024)) u_input_fifo (
         .reset(reset), .wr_clk(clk), .wr_en(wr_en), .din(din), .full(in_full),
         .rd_clk(clk), .rd_en(fifo_rd_en), .dout(fifo_dout), .empty(fifo_empty)
     );
-
-    // fifo_dout_reg removed, using fifo_dout directly (FWFT FIFO)
 
     // --- Activation RAM (1024 x 32) ---
     logic [9:0]                    act_raddr;
@@ -61,6 +58,14 @@ module nn_top
     assign input_sizes = '{10'd784, 10'd32, 10'd16, 10'd16};
     assign num_passes  = '{3'd1, 3'd1, 3'd1, 3'd1};
     assign layer_relu  = '{1'b1, 1'b1, 1'b1, 1'b0};
+
+    // Weight Offsets in Bank Files:
+    // L0: 0, L1: 784, L2: 816, L3: 832
+    logic [11:0] w_offsets [4];
+    assign w_offsets[0] = 12'd0;
+    assign w_offsets[1] = 12'd784;
+    assign w_offsets[2] = 12'd816;
+    assign w_offsets[3] = 12'd832;
 
     // --- MAC Array ---
     logic                          mac_start_in;
@@ -130,17 +135,14 @@ module nn_top
     logic [2:0] pass_idx, pass_idx_next;
     logic [9:0] in_cnt, in_cnt_next;
     logic [5:0] drain_cnt, drain_cnt_next;
-    logic [11:0] w_addr_r, w_addr_next;
 
     logic inf_done_r, inf_done_next;
     logic [3:0] pred_r, pred_next;
     logic signed [DATA_WIDTH-1:0] mscore_r, mscore_next;
 
-    assign global_w_addr = w_addr_r;
-
-    always_comb begin
-        mac_bias_addr = {2'b0, layer_idx};
-    end
+    // Real-time calculation of weight and bias addresses
+    assign global_w_addr = w_offsets[layer_idx] + in_cnt;
+    assign mac_bias_addr = {2'b0, layer_idx};
 
     logic [5:0] drain_limit;
     always_comb begin
@@ -160,7 +162,6 @@ module nn_top
         pass_idx_next  = pass_idx;
         in_cnt_next    = in_cnt;
         drain_cnt_next = drain_cnt;
-        w_addr_next    = w_addr_r;
         
         inf_done_next  = 1'b0;
         pred_next      = pred_r;
@@ -185,7 +186,6 @@ module nn_top
                     state_next = S_LOAD_IMG_RUN;
                     layer_idx_next = 0;
                     pass_idx_next = 0;
-                    w_addr_next = 0;
                     img_cnt_next = 0;
                 end
             end
@@ -196,7 +196,7 @@ module nn_top
                 act_wdata = fifo_dout;
                 img_cnt_next = img_cnt + 1;
                 
-                fifo_rd_en = 1'b1; // Advance FWFT FIFO every cycle
+                fifo_rd_en = 1'b1;
                 
                 if (img_cnt == 784 - 1) begin
                     state_next = S_MAC_PASS;
@@ -213,7 +213,6 @@ module nn_top
                 mac_relu_en  = layer_relu[layer_idx];
                 
                 in_cnt_next = in_cnt + 1;
-                w_addr_next = w_addr_r + 1;
                 
                 if (in_cnt == input_sizes[layer_idx] - 1) begin
                     state_next = S_WAIT_MAC;
@@ -278,7 +277,6 @@ module nn_top
             pass_idx <= '0;
             in_cnt <= '0;
             drain_cnt <= '0;
-            w_addr_r <= '0;
             inf_done_r <= 1'b0;
             pred_r <= '0;
             mscore_r <= '0;
@@ -289,7 +287,6 @@ module nn_top
             pass_idx <= pass_idx_next;
             in_cnt <= in_cnt_next;
             drain_cnt <= drain_cnt_next;
-            w_addr_r <= w_addr_next;
             inf_done_r <= inf_done_next;
             pred_r <= pred_next;
             mscore_r <= mscore_next;
