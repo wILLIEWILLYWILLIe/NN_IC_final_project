@@ -25,6 +25,7 @@ Input (28×28 = 784) → FC+ReLU (128) → FC+ReLU (64) → FC+ReLU (32) → FC 
 NN_Project/
 ├── python_train/
 │   ├── train.py                    # Training & export script
+│   ├── requirements.txt            # Python dependencies
 │   ├── data/                       # MNIST dataset (auto-downloaded)
 │   └── README.md                   # This file
 │
@@ -58,7 +59,8 @@ NN_Project/
 ### Prerequisites
 
 ```bash
-pip3 install torch torchvision
+cd python_train
+pip3 install -r requirements.txt
 ```
 
 ### Train & Export
