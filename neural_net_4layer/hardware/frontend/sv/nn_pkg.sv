@@ -4,11 +4,11 @@
 package nn_pkg;
 
     // --- Quantization ---
-    parameter BITS       = 14;
+    parameter BITS       = 12;
     parameter QUANT_VAL  = (1 << BITS);
 
     // --- Data Width ---
-    parameter DATA_WIDTH = 32;
+    parameter DATA_WIDTH = 16;
 
     // --- Network Topology ---
     parameter NUM_LAYERS   = 4;
@@ -17,12 +17,12 @@ package nn_pkg;
 
     // Layer sizes
     parameter LAYER0_IN  = 784;
-    parameter LAYER0_OUT = 128;
-    parameter LAYER1_IN  = 128;
-    parameter LAYER1_OUT = 64;
-    parameter LAYER2_IN  = 64;
-    parameter LAYER2_OUT = 32;
-    parameter LAYER3_IN  = 32;
+    parameter LAYER0_OUT = 32;
+    parameter LAYER1_IN  = 32;
+    parameter LAYER1_OUT = 16;
+    parameter LAYER2_IN  = 16;
+    parameter LAYER2_OUT = 16;
+    parameter LAYER3_IN  = 16;
     parameter LAYER3_OUT = 10;
 
     // --- FIFO ---

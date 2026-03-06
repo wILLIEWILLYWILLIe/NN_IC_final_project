@@ -1,6 +1,6 @@
 import os
 
-layer_sizes = [(784, 128), (128, 64), (64, 32), (32, 10)]
+layer_sizes = [(784, 32), (32, 16), (16, 16), (16, 10)]
 
 def main():
     os.makedirs("../source", exist_ok=True)

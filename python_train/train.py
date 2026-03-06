@@ -31,11 +31,11 @@ from torchvision import datasets, transforms
 NUM_EPOCHS   = 15
 BATCH_SIZE   = 128
 LEARNING_RATE = 1e-3
-QUANT_BITS   = 14                       # Q14 fixed-point
-QUANT_SCALE  = 1 << QUANT_BITS          # 16384
+QUANT_BITS   = 12                       # Q12 fixed-point
+QUANT_SCALE  = 1 << QUANT_BITS          # 4096
 
 # Network layer sizes  (input, hidden1, hidden2, hidden3, output)
-LAYER_SIZES = [784, 128, 64, 32, 10]
+LAYER_SIZES = [784, 32, 16, 16, 10]
 NUM_LAYERS  = len(LAYER_SIZES) - 1      # 4
 
 # Paths
@@ -68,19 +68,19 @@ class MNISTNet(nn.Module):
 # ──────────────────────────────────────────────────────────────────
 # Quantization helpers
 # ──────────────────────────────────────────────────────────────────
-def float_to_q14(value: float) -> int:
-    """Convert a float to Q14 fixed-point (signed 32-bit integer)."""
+def float_to_q12(value: float) -> int:
+    """Convert a float to Q12 fixed-point (signed 16-bit integer)."""
     q = int(round(value * QUANT_SCALE))
-    # Clamp to 32-bit signed range
-    q = max(-(1 << 31), min((1 << 31) - 1, q))
+    # Clamp to 16-bit signed range (-32768 to 32767)
+    q = max(-(1 << 15), min((1 << 15) - 1, q))
     return q
 
 
-def int_to_hex32(value: int) -> str:
-    """Convert a signed 32-bit integer to 8-digit uppercase hex (two's complement)."""
+def int_to_hex16(value: int) -> str:
+    """Convert a signed 16-bit integer to 4-digit uppercase hex (two's complement)."""
     if value < 0:
-        value = value + (1 << 32)              # two's complement
-    return f"{value & 0xFFFFFFFF:08X}"
+        value = value + (1 << 16)              # two's complement
+    return f"{value & 0xFFFF:04X}"
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -100,12 +100,12 @@ def export_layer(weights_2d, biases_1d, layer_idx, output_dir):
         # Weights: shape = (out_features, in_features) — row-major
         for out_i in range(weights_2d.shape[0]):
             for in_j in range(weights_2d.shape[1]):
-                q = float_to_q14(weights_2d[out_i, in_j].item())
-                f.write(int_to_hex32(q) + "\n")
+                q = float_to_q12(weights_2d[out_i, in_j].item())
+                f.write(int_to_hex16(q) + "\n")
         # Biases
         for b in biases_1d:
-            q = float_to_q14(b.item())
-            f.write(int_to_hex32(q) + "\n")
+            q = float_to_q12(b.item())
+            f.write(int_to_hex16(q) + "\n")
 
     num_w = weights_2d.shape[0] * weights_2d.shape[1]
     num_b = biases_1d.shape[0]
@@ -121,8 +121,8 @@ def export_test_sample(dataset, output_dir, class_label, sample_idx):
     x_path = os.path.join(output_dir, f"x_test_class{class_label}.txt")
     with open(x_path, "w") as f:
         for p in pixels:
-            q = float_to_q14(p.item())
-            f.write(int_to_hex32(q) + "\n")
+            q = float_to_q12(p.item())
+            f.write(int_to_hex16(q) + "\n")
 
     y_path = os.path.join(output_dir, f"y_test_class{class_label}.txt")
     with open(y_path, "w") as f:
@@ -205,21 +205,22 @@ def generate_c_reference(output_dir, layer_sizes):
 
 // ──────────────────────────────────────────────────────────────────
 // Neuron: computes one output in Q14 fixed-point.
-//   acc = bias (Q14)
-//   acc += (input_q14[i] * weight_q14[i]) >> BITS   (Q14*Q14 = Q28, >> 14 = Q14)
-//   output = acc   (stays in Q14 for next layer)
+// Neuron: computes one output in Q12 fixed-point.
+//   acc = bias (Q12)
+//   acc += (input_q12[i] * weight_q12[i]) >> BITS   (Q12*Q12 = Q24, >> 12 = Q12)
+//   output = acc   (stays in Q12 for next layer)
 // ──────────────────────────────────────────────────────────────────
 void neuron(int *inputs, int *weights, int bias, int input_size, int *output)
 {{
-    long long acc = (long long)bias;   // use 64-bit to avoid overflow
+    long long acc = (long long)bias;
     for (int i = 0; i < input_size; i++)
     {{
         acc += ((long long)inputs[i] * (long long)weights[i]) >> BITS;
     }}
-    // Clamp to 32-bit range
-    if (acc > 0x7FFFFFFF)  acc = 0x7FFFFFFF;
-    if (acc < -0x80000000LL) acc = -0x80000000LL;
-    *output = (int)acc;   // Q14 output
+    // Clamp to 16-bit range
+    if (acc > 32767)  acc = 32767;
+    if (acc < -32768) acc = -32768;
+    *output = (int)acc;   // Q12 output
 }}
 
 void relu(int *input, int size, int *output)
@@ -235,7 +236,7 @@ int argmax(int *input, int size)
     int max_val = input[0];
     int index = 0;
 
-    printf("Output layer values (Q14):\\n");
+    printf("Output layer values (Q12):\\n");
     for (int i = 0; i < size; i++)
         printf("  Class %d: %d  (float ~%.4f)\\n", i, input[i],
                (double)input[i] / QUANT_VAL);
@@ -291,18 +292,18 @@ int main()
     int layer_in_sizes[NUM_LAYERS]  = {{{layer_in_str}}};
     int layer_out_sizes[NUM_LAYERS] = {{{layer_out_str}}};
 
-    // 1. Load Inputs (Q14 hex format)
+    // 1. Load Inputs (Q12 hex format)
     printf("Loading %d inputs from x_test.txt ...\\n", NUM_INPUTS);
     FILE *f_in = fopen("x_test.txt", "r");
     if (!f_in) {{ printf("ERROR: Could not open x_test.txt\\n"); return 1; }}
     for (int i = 0; i < NUM_INPUTS; i++)
     {{
         unsigned int tmp;
-        if (fscanf(f_in, "%08x", &tmp) != 1) {{
+        if (fscanf(f_in, "%04x", &tmp) != 1) {{
             printf("ERROR: Failed to read input %d\\n", i);
             return 1;
         }}
-        inputs[i] = (int)tmp;   // reinterpret as signed
+        inputs[i] = (short)tmp;   // reinterpret as signed 16-bit
     }}
     fclose(f_in);
 
@@ -318,20 +319,20 @@ int main()
         int num_w = layer_in_sizes[l] * layer_out_sizes[l];
         for (int i = 0; i < num_w; i++) {{
             unsigned int tmp;
-            if (fscanf(f, "%08x", &tmp) != 1) {{
+            if (fscanf(f, "%04x", &tmp) != 1) {{
                 printf("ERROR: Failed reading weight %d in Layer %d\\n", i, l);
                 return 1;
             }}
-            weights[l][i] = (int)tmp;
+            weights[l][i] = (short)tmp;
         }}
 
         for (int i = 0; i < layer_out_sizes[l]; i++) {{
             unsigned int tmp;
-            if (fscanf(f, "%08x", &tmp) != 1) {{
+            if (fscanf(f, "%04x", &tmp) != 1) {{
                 printf("ERROR: Failed reading bias %d in Layer %d\\n", i, l);
                 return 1;
             }}
-            biases[l][i] = (int)tmp;
+            biases[l][i] = (short)tmp;
         }}
         fclose(f);
         printf("  Loaded %d weights + %d biases\\n", num_w, layer_out_sizes[l]);
@@ -433,17 +434,17 @@ def run_quantized_inference(model, sample_pixels, true_label):
 
     linear_layers = [m for m in model.net if isinstance(m, nn.Linear)]
 
-    # Quantize input pixels to Q14 (same as x_test.txt values)
-    x = np.array([float_to_q14(p.item()) for p in sample_pixels], dtype=np.int64)
+    # Quantize input pixels to Q12 (same as x_test.txt values)
+    x = np.array([float_to_q12(p.item()) for p in sample_pixels], dtype=np.int64)
 
     for i, lin in enumerate(linear_layers):
         W = lin.weight.detach().cpu().numpy()     # (out, in)
         b = lin.bias.detach().cpu().numpy()       # (out,)
         out_size, in_size = W.shape
 
-        W_q = np.array([[float_to_q14(W[o, j]) for j in range(in_size)]
+        W_q = np.array([[float_to_q12(W[o, j]) for j in range(in_size)]
                          for o in range(out_size)], dtype=np.int64)
-        b_q = np.array([float_to_q14(b[o]) for o in range(out_size)], dtype=np.int64)
+        b_q = np.array([float_to_q12(b[o]) for o in range(out_size)], dtype=np.int64)
 
         # ── Proper Q14 computation (matches updated C code) ──
         # acc  = bias_q14
@@ -455,8 +456,8 @@ def run_quantized_inference(model, sample_pixels, true_label):
             for j in range(in_size):
                 prod = int(x[j]) * int(W_q[o, j])  # Q14 × Q14 = Q28
                 acc += prod >> QUANT_BITS            # Q28 >> 14 = Q14
-            # Clamp to 32-bit signed range
-            acc = max(-0x80000000, min(0x7FFFFFFF, acc))
+            # Clamp to 16-bit signed range
+            acc = max(-32768, min(32767, acc))
             y[o] = acc
 
         # ReLU
@@ -482,7 +483,7 @@ def run_quantized_inference(model, sample_pixels, true_label):
 # ──────────────────────────────────────────────────────────────────
 def main():
     print("=" * 60)
-    print("  4-Layer MNIST Training & Q14 Hex Export")
+    print("  4-Layer MNIST Training & Q12 Hex Export")
     print("=" * 60)
 
     device = get_device()
