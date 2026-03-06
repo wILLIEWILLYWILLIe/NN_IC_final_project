@@ -1,4 +1,98 @@
-# //  ModelSim SE-64 2020.1 Jan 28 2020 Linux 4.18.0-553.89.1.el8_10.x86_64
+# do nn_sim.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim SE-64 vmap 2020.1 Lib Mapping Utility 2020.01 Jan 28 2020
+# vmap work work 
+# Modifying modelsim.ini
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 12:08:39 on Mar 06,2026
+# vlog -sv ../sv/nn_pkg.sv 
+# -- Compiling package nn_pkg
+# 
+# Top level modules:
+# 	--none--
+# End time: 12:08:39 on Mar 06,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 12:08:39 on Mar 06,2026
+# vlog -sv ../sv/fifo.sv 
+# -- Compiling module fifo
+# 
+# Top level modules:
+# 	fifo
+# End time: 12:08:39 on Mar 06,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 12:08:39 on Mar 06,2026
+# vlog -sv ../sv/npu_mac.sv 
+# -- Compiling module mac_cell
+# -- Importing package nn_pkg
+# -- Compiling module mac_lane
+# 
+# Top level modules:
+# 	mac_lane
+# End time: 12:08:39 on Mar 06,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 12:08:39 on Mar 06,2026
+# vlog -sv ../sv/argmax.sv 
+# -- Compiling module argmax
+# -- Importing package nn_pkg
+# ** Warning: ../sv/argmax.sv(16): (vlog-13314) Defaulting port 'scores' kind to 'var' rather than 'wire' due to default compile option setting of -svinputport=relaxed.
+# 
+# Top level modules:
+# 	argmax
+# End time: 12:08:39 on Mar 06,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 1
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 12:08:39 on Mar 06,2026
+# vlog -sv ../sv/nn_top.sv 
+# -- Compiling module nn_top
+# -- Importing package nn_pkg
+# 
+# Top level modules:
+# 	nn_top
+# End time: 12:08:39 on Mar 06,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 12:08:39 on Mar 06,2026
+# vlog -sv "+incdir+../uvm" ../uvm/my_uvm_pkg.sv 
+# -- Compiling package my_uvm_pkg
+# -- Importing package mtiUvm.uvm_pkg (uvm-1.1d Built-in)
+# -- Importing package nn_pkg
+# ** Note: (vlog-2286) ../uvm/my_uvm_pkg.sv(10): Using implicit +incdir+/vol/mentor/modelsim-2020.1/modeltech/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
+# 
+# Top level modules:
+# 	--none--
+# End time: 12:08:40 on Mar 06,2026, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 12:08:40 on Mar 06,2026
+# vlog -sv "+incdir+../uvm" ../uvm/nn_if.sv 
+# -- Compiling interface nn_if
+# -- Importing package nn_pkg
+# 
+# Top level modules:
+# 	--none--
+# End time: 12:08:40 on Mar 06,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 12:08:40 on Mar 06,2026
+# vlog -sv "+incdir+../uvm" ../uvm/my_uvm_tb.sv 
+# ** Note: (vlog-2286) ../uvm/my_uvm_tb.sv(4): Using implicit +incdir+/vol/mentor/modelsim-2020.1/modeltech/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
+# -- Compiling package my_uvm_tb_sv_unit
+# -- Importing package mtiUvm.uvm_pkg (uvm-1.1d Built-in)
+# -- Importing package my_uvm_pkg
+# -- Importing package nn_pkg
+# -- Compiling module my_uvm_tb
+# 
+# Top level modules:
+# 	my_uvm_tb
+# End time: 12:08:41 on Mar 06,2026, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+# vsim -voptargs=""+acc"" my_uvm_tb "+UVM_TESTNAME=my_uvm_test" 
+# Start time: 12:08:41 on Mar 06,2026
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# //  ModelSim SE-64 2020.1 Jan 28 2020 Linux 4.18.0-553.107.1.el8_10.x86_64
 # //
 # //  Copyright 1991-2020 Mentor Graphics Corporation
 # //  All Rights Reserved.
@@ -11,111 +105,7 @@
 # //  is prohibited from disclosure under the Trade Secrets Act,
 # //  18 U.S.C. Section 1905.
 # //
-# ** Warning: License feature 'msimviewer' will expire in 14 days.
-# do nn_sim.do
-# ** Warning: (vlib-34) Library already exists at "work".
-# Model Technology ModelSim SE-64 vmap 2020.1 Lib Mapping Utility 2020.01 Jan 28 2020
-# vmap work work 
-# Modifying modelsim.ini
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 17:01:02 on Mar 04,2026
-# vlog -reportprogress 300 -sv ../sv/nn_pkg.sv 
-# -- Compiling package nn_pkg
-# 
-# Top level modules:
-# 	--none--
-# End time: 17:01:03 on Mar 04,2026, Elapsed time: 0:00:01
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 17:01:03 on Mar 04,2026
-# vlog -reportprogress 300 -sv ../sv/fifo.sv 
-# -- Compiling module fifo
-# 
-# Top level modules:
-# 	fifo
-# End time: 17:01:03 on Mar 04,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 17:01:03 on Mar 04,2026
-# vlog -reportprogress 300 -sv ../sv/neuron.sv 
-# -- Compiling module neuron
-# -- Importing package nn_pkg
-# 
-# Top level modules:
-# 	neuron
-# End time: 17:01:03 on Mar 04,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 17:01:03 on Mar 04,2026
-# vlog -reportprogress 300 -sv ../sv/layer.sv 
-# -- Compiling module layer
-# -- Importing package nn_pkg
-# 
-# Top level modules:
-# 	layer
-# End time: 17:01:03 on Mar 04,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 17:01:03 on Mar 04,2026
-# vlog -reportprogress 300 -sv ../sv/argmax.sv 
-# -- Compiling module argmax
-# -- Importing package nn_pkg
-# ** Warning: ../sv/argmax.sv(16): (vlog-13314) Defaulting port 'scores' kind to 'var' rather than 'wire' due to default compile option setting of -svinputport=relaxed.
-# 
-# Top level modules:
-# 	argmax
-# End time: 17:01:03 on Mar 04,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 1
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 17:01:03 on Mar 04,2026
-# vlog -reportprogress 300 -sv ../sv/nn_top.sv 
-# -- Compiling module nn_top
-# -- Importing package nn_pkg
-# 
-# Top level modules:
-# 	nn_top
-# End time: 17:01:03 on Mar 04,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 17:01:03 on Mar 04,2026
-# vlog -reportprogress 300 -sv "+incdir+../uvm" ../uvm/my_uvm_pkg.sv 
-# -- Compiling package my_uvm_pkg
-# -- Importing package mtiUvm.uvm_pkg (uvm-1.1d Built-in)
-# -- Importing package nn_pkg
-# ** Note: (vlog-2286) ../uvm/my_uvm_pkg.sv(10): Using implicit +incdir+/vol/mentor/modelsim-2020.1/modeltech/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
-# 
-# Top level modules:
-# 	--none--
-# End time: 17:01:03 on Mar 04,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 17:01:03 on Mar 04,2026
-# vlog -reportprogress 300 -sv "+incdir+../uvm" ../uvm/nn_if.sv 
-# -- Compiling interface nn_if
-# -- Importing package nn_pkg
-# 
-# Top level modules:
-# 	--none--
-# End time: 17:01:03 on Mar 04,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 17:01:03 on Mar 04,2026
-# vlog -reportprogress 300 -sv "+incdir+../uvm" ../uvm/my_uvm_tb.sv 
-# ** Note: (vlog-2286) ../uvm/my_uvm_tb.sv(4): Using implicit +incdir+/vol/mentor/modelsim-2020.1/modeltech/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
-# -- Compiling package my_uvm_tb_sv_unit
-# -- Importing package mtiUvm.uvm_pkg (uvm-1.1d Built-in)
-# -- Importing package my_uvm_pkg
-# -- Importing package nn_pkg
-# -- Compiling module my_uvm_tb
-# 
-# Top level modules:
-# 	my_uvm_tb
-# End time: 17:01:04 on Mar 04,2026, Elapsed time: 0:00:01
-# Errors: 0, Warnings: 0
-# vsim -voptargs=""+acc"" my_uvm_tb "+UVM_TESTNAME=my_uvm_test" 
-# Start time: 17:01:04 on Mar 04,2026
-# ** Note: (vsim-8009) Loading existing optimized design _opt1
-# ** Warning: License feature 'msimhdlsim' will expire in 14 days.
+# ** Warning: License feature 'msimhdlsim' will expire in 12 days.
 # Loading sv_std.std
 # Loading work.nn_if(fast)
 # Loading work.nn_pkg(fast)
@@ -127,13 +117,11 @@
 # Loading work.nn_if(fast__2)
 # Loading work.nn_top(fast)
 # Loading work.fifo(fast)
-# Loading work.layer(fast)
-# Loading work.neuron(fast)
-# Loading work.layer(fast__1)
-# Loading work.neuron(fast__1)
+# Loading work.mac_lane(fast)
+# Loading work.mac_cell(fast)
 # Loading work.argmax(fast)
 # Loading /vol/mentor/modelsim-2020.1/modeltech/uvm-1.1d/linux_x86_64/uvm_dpi.so
-# ** Warning: License feature 'svverification' will expire in 14 days.
+# ** Warning: License feature 'svverification' will expire in 12 days.
 # ----------------------------------------------------------------
 # UVM-1.1d
 # (C) 2007-2013 Mentor Graphics Corporation
@@ -157,25 +145,281 @@
 # UVM_INFO verilog_src/questa_uvm_pkg-1.2/src/questa_uvm_pkg.sv(277) @ 0: reporter [Questa UVM] QUESTA_UVM-1.2.3
 # UVM_INFO verilog_src/questa_uvm_pkg-1.2/src/questa_uvm_pkg.sv(278) @ 0: reporter [Questa UVM]  questa_uvm::init(+struct)
 # UVM_INFO @ 0: reporter [RNTST] Running test my_uvm_test...
-# UVM_INFO ../uvm/my_uvm_scoreboard.sv(82) @ 0: uvm_test_top.env.scoreboard [SCB] Expected label (ground truth): 7
+# UVM_INFO ../uvm/my_uvm_scoreboard.sv(92) @ 0: uvm_test_top.env.scoreboard [SCB] Expected label (ground truth): 9
 # UVM_INFO ../uvm/my_uvm_driver.sv(25) @ 0: uvm_test_top.env.agent.driver [DRV] Waiting for reset deassertion
-# UVM_INFO ../uvm/my_uvm_sequence.sv(23) @ 0: uvm_test_top.env.agent.sequencer@@seq [SEQ] Reading 784 input pixels from ../source/x_test.txt
+# UVM_INFO ../uvm/my_uvm_sequence.sv(23) @ 0: uvm_test_top.env.agent.sequencer@@seq [SEQ] Reading 784 input pixels from ../../../source/x_test.txt
 # UVM_INFO ../uvm/my_uvm_driver.sv(29) @ 10000: uvm_test_top.env.agent.driver [DRV] Reset deasserted, starting drive loop
 # UVM_INFO ../uvm/my_uvm_driver.sv(41) @ 14500: uvm_test_top.env.agent.driver [DRV] Driving 784 pixels into FIFO
 # UVM_INFO ../uvm/my_uvm_driver.sv(51) @ 798600: uvm_test_top.env.agent.driver [DRV] All pixels driven
 # UVM_INFO ../uvm/my_uvm_sequence.sv(38) @ 798600: uvm_test_top.env.agent.sequencer@@seq [SEQ] Sequence complete
-# UVM_INFO ../uvm/my_uvm_monitor.sv(54) @ 833600: uvm_test_top.env.agent.monitor [MON] Inference done! Predicted class: 7, Max score: 1
-# UVM_INFO ../uvm/my_uvm_scoreboard.sv(105) @ 833600: uvm_test_top.env.scoreboard [SCB] TEST PASSED! Predicted: 7, Expected: 7, Score: 1
-# UVM_INFO verilog_src/uvm-1.1d/src/base/uvm_objection.svh(1267) @ 2798600: reporter [TEST_DONE] 'run' phase is ready to proceed to the 'extract' phase
-# UVM_INFO ../uvm/my_uvm_monitor.sv(65) @ 2798600: uvm_test_top.env.agent.monitor [MON] --- PERFORMANCE SUMMARY ---
-# UVM_INFO ../uvm/my_uvm_monitor.sv(66) @ 2798600: uvm_test_top.env.agent.monitor [MON] First Write Cycle:    6
-# UVM_INFO ../uvm/my_uvm_monitor.sv(67) @ 2798600: uvm_test_top.env.agent.monitor [MON] Inference Done Cycle: 824
-# UVM_INFO ../uvm/my_uvm_monitor.sv(68) @ 2798600: uvm_test_top.env.agent.monitor [MON] Total Latency:        818 cycles
-# UVM_INFO ../uvm/my_uvm_monitor.sv(69) @ 2798600: uvm_test_top.env.agent.monitor [MON] @100MHz Inference:    8.18 us
-# UVM_INFO ../uvm/my_uvm_monitor.sv(70) @ 2798600: uvm_test_top.env.agent.monitor [MON] ---------------------------
-# UVM_INFO ../uvm/my_uvm_scoreboard.sv(116) @ 2798600: uvm_test_top.env.scoreboard [SCB] ALL 1 TESTS PASSED!
-# UVM_INFO ../uvm/my_uvm_scoreboard.sv(122) @ 2798600: uvm_test_top.env.scoreboard [SCB] Prediction Coverage: 17.8%
-# UVM_INFO ../uvm/my_uvm_scoreboard.sv(123) @ 2798600: uvm_test_top.env.scoreboard [SCB] Layer Activations Coverage: 100.0%
+# MAC Output: acc=381253009, dq=23269, out=23269
+# MAC Output: acc=-180214813, dq=-11000, out=0
+# MAC Output: acc=-265313805, dq=-16194, out=0
+# MAC Output: acc=242661137, dq=14810, out=14810
+# MAC Output: acc=-182881639, dq=-11163, out=0
+# MAC Output: acc=246066655, dq=15018, out=15018
+# MAC Output: acc=-518870424, dq=-31670, out=0
+# MAC Output: acc=-264847486, dq=-16166, out=0
+# MAC Output: acc=-4793167, dq=-293, out=0
+# MAC Output: acc=335502626, dq=20477, out=20477
+# MAC Output: acc=26383245, dq=1610, out=1610
+# MAC Output: acc=-684082944, dq=-41754, out=0
+# MAC Output: acc=449567346, dq=27439, out=27439
+# MAC Output: acc=112592796, dq=6872, out=6872
+# MAC Output: acc=-186804557, dq=-11402, out=0
+# MAC Output: acc=-347532097, dq=-21212, out=0
+# MAC Output: acc=201621392, dq=12305, out=12305
+# MAC Output: acc=-168482302, dq=-10284, out=0
+# MAC Output: acc=630312906, dq=38471, out=38471
+# MAC Output: acc=-390514066, dq=-23836, out=0
+# MAC Output: acc=430311217, dq=26264, out=26264
+# MAC Output: acc=-512391965, dq=-31274, out=0
+# MAC Output: acc=-461678576, dq=-28179, out=0
+# MAC Output: acc=129126367, dq=7881, out=7881
+# MAC Output: acc=-1298257626, dq=-79240, out=0
+# MAC Output: acc=614285432, dq=37493, out=37493
+# MAC Output: acc=-1050852709, dq=-64139, out=0
+# MAC Output: acc=-166601712, dq=-10169, out=0
+# MAC Output: acc=281364777, dq=17173, out=17173
+# MAC Output: acc=294737869, dq=17989, out=17989
+# MAC Output: acc=209575299, dq=12791, out=12791
+# MAC Output: acc=-556879443, dq=-33990, out=0
+# MAC Output: acc=-335604409, dq=-20484, out=0
+# MAC Output: acc=734285639, dq=44817, out=44817
+# MAC Output: acc=-203840582, dq=-12442, out=0
+# MAC Output: acc=-655900399, dq=-40033, out=0
+# MAC Output: acc=-177006231, dq=-10804, out=0
+# MAC Output: acc=-694522325, dq=-42391, out=0
+# MAC Output: acc=-490067515, dq=-29912, out=0
+# MAC Output: acc=-1162299115, dq=-70942, out=0
+# MAC Output: acc=154232849, dq=9413, out=9413
+# MAC Output: acc=89204429, dq=5444, out=5444
+# MAC Output: acc=620205205, dq=37854, out=37854
+# MAC Output: acc=219992495, dq=13427, out=13427
+# MAC Output: acc=369941555, dq=22579, out=22579
+# MAC Output: acc=282752867, dq=17257, out=17257
+# MAC Output: acc=-319982768, dq=-19531, out=0
+# MAC Output: acc=233522702, dq=14253, out=14253
+# MAC Output: acc=-155742355, dq=-9506, out=0
+# MAC Output: acc=37980053, dq=2318, out=2318
+# MAC Output: acc=-298326637, dq=-18209, out=0
+# MAC Output: acc=-449152489, dq=-27415, out=0
+# MAC Output: acc=-728091277, dq=-44440, out=0
+# MAC Output: acc=64710846, dq=3949, out=3949
+# MAC Output: acc=493641751, dq=30129, out=30129
+# MAC Output: acc=-411032507, dq=-25088, out=0
+# MAC Output: acc=-96441266, dq=-5887, out=0
+# MAC Output: acc=-166033478, dq=-10134, out=0
+# MAC Output: acc=217678202, dq=13286, out=13286
+# MAC Output: acc=455427968, dq=27797, out=27797
+# MAC Output: acc=-212709670, dq=-12983, out=0
+# MAC Output: acc=-564618414, dq=-34462, out=0
+# MAC Output: acc=-598756329, dq=-36546, out=0
+# MAC Output: acc=-1057455955, dq=-64542, out=0
+# MAC Output: acc=38862948, dq=2372, out=2372
+# MAC Output: acc=-57999628, dq=-3541, out=0
+# MAC Output: acc=-491786949, dq=-30017, out=0
+# MAC Output: acc=176793203, dq=10790, out=10790
+# MAC Output: acc=566798857, dq=34594, out=34594
+# MAC Output: acc=-15574013, dq=-951, out=0
+# MAC Output: acc=-345672121, dq=-21099, out=0
+# MAC Output: acc=-332781768, dq=-20312, out=0
+# MAC Output: acc=131282342, dq=8012, out=8012
+# MAC Output: acc=437202875, dq=26684, out=26684
+# MAC Output: acc=347917850, dq=21235, out=21235
+# MAC Output: acc=-305000853, dq=-18616, out=0
+# MAC Output: acc=568036690, dq=34670, out=34670
+# MAC Output: acc=-342764264, dq=-20921, out=0
+# MAC Output: acc=181476068, dq=11076, out=11076
+# MAC Output: acc=-649095130, dq=-39618, out=0
+# MAC Output: acc=462956069, dq=28256, out=28256
+# MAC Output: acc=-627262043, dq=-38286, out=0
+# MAC Output: acc=-357335748, dq=-21811, out=0
+# MAC Output: acc=-368944988, dq=-22519, out=0
+# MAC Output: acc=-106965925, dq=-6529, out=0
+# MAC Output: acc=-804411797, dq=-49098, out=0
+# MAC Output: acc=317499857, dq=19378, out=19378
+# MAC Output: acc=462115288, dq=28205, out=28205
+# MAC Output: acc=-514633624, dq=-31411, out=0
+# MAC Output: acc=495180966, dq=30223, out=30223
+# MAC Output: acc=435367297, dq=26572, out=26572
+# MAC Output: acc=-463946224, dq=-28318, out=0
+# MAC Output: acc=185732551, dq=11336, out=11336
+# MAC Output: acc=-520108101, dq=-31745, out=0
+# MAC Output: acc=-148744364, dq=-9079, out=0
+# MAC Output: acc=-152689727, dq=-9320, out=0
+# MAC Output: acc=-237587468, dq=-14502, out=0
+# MAC Output: acc=-247779362, dq=-15124, out=0
+# MAC Output: acc=52548121, dq=3207, out=3207
+# MAC Output: acc=1066263637, dq=65079, out=65079
+# MAC Output: acc=-948641670, dq=-57901, out=0
+# MAC Output: acc=-64727378, dq=-3951, out=0
+# MAC Output: acc=291404453, dq=17785, out=17785
+# MAC Output: acc=381796730, dq=23303, out=23303
+# MAC Output: acc=4614401, dq=281, out=281
+# MAC Output: acc=-293885813, dq=-17938, out=0
+# MAC Output: acc=352049035, dq=21487, out=21487
+# MAC Output: acc=370995393, dq=22643, out=22643
+# MAC Output: acc=-148404135, dq=-9058, out=0
+# MAC Output: acc=-579998614, dq=-35401, out=0
+# MAC Output: acc=393690235, dq=24028, out=24028
+# MAC Output: acc=-773942520, dq=-47238, out=0
+# MAC Output: acc=-123220487, dq=-7521, out=0
+# MAC Output: acc=-167167727, dq=-10204, out=0
+# MAC Output: acc=-253741154, dq=-15488, out=0
+# MAC Output: acc=364892969, dq=22271, out=22271
+# MAC Output: acc=343359171, dq=20956, out=20956
+# MAC Output: acc=56513634, dq=3449, out=3449
+# MAC Output: acc=449028374, dq=27406, out=27406
+# MAC Output: acc=202323765, dq=12348, out=12348
+# MAC Output: acc=91276981, dq=5571, out=5571
+# MAC Output: acc=-708102811, dq=-43220, out=0
+# MAC Output: acc=649432660, dq=39638, out=39638
+# MAC Output: acc=401654096, dq=24515, out=24515
+# MAC Output: acc=-1101175849, dq=-67211, out=0
+# MAC Output: acc=-13171324, dq=-804, out=0
+# MAC Output: acc=-155466362, dq=-9489, out=0
+# MAC Output: acc=498580865, dq=30430, out=30430
+# MAC Output: acc=-110472724, dq=-6743, out=0
+# MAC Output: acc=-9033921, dq=-552, out=0
+# MAC Output: acc=54422741, dq=3321, out=3321
+# MAC Output: acc=-551009323, dq=-33631, out=0
+# MAC Output: acc=-805389374, dq=-49158, out=0
+# MAC Output: acc=-632741669, dq=-38620, out=0
+# MAC Output: acc=-64477377, dq=-3936, out=0
+# MAC Output: acc=153517211, dq=9369, out=9369
+# MAC Output: acc=1200376255, dq=73265, out=73265
+# MAC Output: acc=1161242547, dq=70876, out=70876
+# MAC Output: acc=733429263, dq=44764, out=44764
+# MAC Output: acc=-890150829, dq=-54331, out=0
+# MAC Output: acc=337681409, dq=20610, out=20610
+# MAC Output: acc=1457279554, dq=88945, out=88945
+# MAC Output: acc=-782630330, dq=-47768, out=0
+# MAC Output: acc=356701699, dq=21771, out=21771
+# MAC Output: acc=-329400936, dq=-20106, out=0
+# MAC Output: acc=528930450, dq=32283, out=32283
+# MAC Output: acc=-532207264, dq=-32484, out=0
+# MAC Output: acc=338178741, dq=20640, out=20640
+# MAC Output: acc=-332201027, dq=-20276, out=0
+# MAC Output: acc=636182172, dq=38829, out=38829
+# MAC Output: acc=-494736563, dq=-30197, out=0
+# MAC Output: acc=-591268371, dq=-36089, out=0
+# MAC Output: acc=545475706, dq=33293, out=33293
+# MAC Output: acc=-567956893, dq=-34666, out=0
+# MAC Output: acc=431666681, dq=26346, out=26346
+# MAC Output: acc=1432944120, dq=87459, out=87459
+# MAC Output: acc=-611912250, dq=-37349, out=0
+# MAC Output: acc=359510563, dq=21942, out=21942
+# MAC Output: acc=-530538560, dq=-32382, out=0
+# MAC Output: acc=-703171859, dq=-42919, out=0
+# MAC Output: acc=575832299, dq=35146, out=35146
+# MAC Output: acc=-318120284, dq=-19417, out=0
+# MAC Output: acc=-453616436, dq=-27687, out=0
+# MAC Output: acc=1242203189, dq=75818, out=75818
+# MAC Output: acc=1157913496, dq=70673, out=70673
+# MAC Output: acc=-645668017, dq=-39409, out=0
+# MAC Output: acc=608341168, dq=37130, out=37130
+# MAC Output: acc=522792687, dq=31908, out=31908
+# MAC Output: acc=345527270, dq=21089, out=21089
+# MAC Output: acc=1600955000, dq=97714, out=97714
+# MAC Output: acc=33231387, dq=2028, out=2028
+# MAC Output: acc=-398304516, dq=-24311, out=0
+# MAC Output: acc=1562075882, dq=95341, out=95341
+# MAC Output: acc=553715968, dq=33796, out=33796
+# MAC Output: acc=1004749548, dq=61325, out=61325
+# MAC Output: acc=859254660, dq=52444, out=52444
+# MAC Output: acc=-400884790, dq=-24469, out=0
+# MAC Output: acc=-55114612, dq=-3364, out=0
+# MAC Output: acc=458238109, dq=27968, out=27968
+# MAC Output: acc=41596790, dq=2538, out=2538
+# MAC Output: acc=1452240021, dq=88637, out=88637
+# MAC Output: acc=-325245002, dq=-19852, out=0
+# MAC Output: acc=1283995123, dq=78368, out=78368
+# MAC Output: acc=637199892, dq=38891, out=38891
+# MAC Output: acc=-453234515, dq=-27664, out=0
+# MAC Output: acc=220337594, dq=13448, out=13448
+# MAC Output: acc=979203828, dq=59765, out=59765
+# MAC Output: acc=29862792, dq=1822, out=1822
+# MAC Output: acc=-31334908, dq=-1913, out=0
+# MAC Output: acc=401789215, dq=24523, out=24523
+# MAC Output: acc=546214117, dq=33338, out=33338
+# MAC Output: acc=-641778190, dq=-39172, out=0
+# MAC Output: acc=24289752, dq=1482, out=1482
+# MAC Output: acc=415415611, dq=25354, out=25354
+# MAC Output: acc=757204777, dq=46216, out=46216
+# MAC Output: acc=3106968301, dq=189634, out=189634
+# MAC Output: acc=-1457211401, dq=-88942, out=0
+# MAC Output: acc=-961857610, dq=-58708, out=0
+# MAC Output: acc=493712631, dq=30133, out=30133
+# MAC Output: acc=-658619904, dq=-40199, out=0
+# MAC Output: acc=1459290291, dq=89068, out=89068
+# MAC Output: acc=2079046854, dq=126894, out=126894
+# MAC Output: acc=-1249057108, dq=-76237, out=0
+# MAC Output: acc=-735945265, dq=-44919, out=0
+# MAC Output: acc=-872167224, dq=-53233, out=0
+# MAC Output: acc=1199910766, dq=73236, out=73236
+# MAC Output: acc=-25426715, dq=-1552, out=0
+# MAC Output: acc=106488446, dq=6499, out=6499
+# MAC Output: acc=-742753838, dq=-45335, out=0
+# MAC Output: acc=3007296354, dq=183550, out=183550
+# MAC Output: acc=1572688273, dq=95989, out=95989
+# MAC Output: acc=2609892139, dq=159295, out=159295
+# MAC Output: acc=-443799814, dq=-27088, out=0
+# MAC Output: acc=-146860250, dq=-8964, out=0
+# MAC Output: acc=1736255494, dq=105972, out=105972
+# MAC Output: acc=66478938, dq=4057, out=4057
+# MAC Output: acc=2776507718, dq=169464, out=169464
+# MAC Output: acc=1119279800, dq=68315, out=68315
+# MAC Output: acc=-1149437395, dq=-70157, out=0
+# MAC Output: acc=-509332426, dq=-31088, out=0
+# MAC Output: acc=1838318350, dq=112202, out=112202
+# MAC Output: acc=1710045278, dq=104372, out=104372
+# MAC Output: acc=2198648687, dq=134194, out=134194
+# MAC Output: acc=188446587, dq=11501, out=11501
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=0, dq=0, out=0
+# MAC Output: acc=3217194000, dq=196361, out=196361
+# MAC Output: acc=-1415568471, dq=-86400, out=-86400
+# MAC Output: acc=-204094758, dq=-12457, out=-12457
+# MAC Output: acc=-6670132921, dq=-407113, out=-407113
+# MAC Output: acc=-2134088824, dq=-130255, out=-130255
+# MAC Output: acc=-696308079, dq=-42500, out=-42500
+# MAC Output: acc=717404887, dq=43786, out=43786
+# MAC Output: acc=-1564226058, dq=-95473, out=-95473
+# MAC Output: acc=-1707049363, dq=-104191, out=-104191
+# MAC Output: acc=-2989489752, dq=-182464, out=-182464
+# UVM_INFO ../uvm/my_uvm_monitor.sv(52) @ 4574500: uvm_test_top.env.agent.monitor [MON] Inference done! Predicted class: 9, Max score: 196361
+# UVM_INFO ../uvm/my_uvm_scoreboard.sv(111) @ 4574500: uvm_test_top.env.scoreboard [SCB] TEST PASSED! Predicted: 9, Expected: 9, Score: 196361
+# UVM_INFO verilog_src/uvm-1.1d/src/base/uvm_objection.svh(1267) @ 20798600: reporter [TEST_DONE] 'run' phase is ready to proceed to the 'extract' phase
+# UVM_INFO ../uvm/my_uvm_monitor.sv(65) @ 20798600: uvm_test_top.env.agent.monitor [MON] --- PERFORMANCE SUMMARY ---
+# UVM_INFO ../uvm/my_uvm_monitor.sv(66) @ 20798600: uvm_test_top.env.agent.monitor [MON] First Write Cycle:    6
+# UVM_INFO ../uvm/my_uvm_monitor.sv(67) @ 20798600: uvm_test_top.env.agent.monitor [MON] Inference Done Cycle: 4565
+# UVM_INFO ../uvm/my_uvm_monitor.sv(68) @ 20798600: uvm_test_top.env.agent.monitor [MON] Total Latency:        4559 cycles
+# UVM_INFO ../uvm/my_uvm_monitor.sv(69) @ 20798600: uvm_test_top.env.agent.monitor [MON] @100MHz Inference:    45.59 us
+# UVM_INFO ../uvm/my_uvm_monitor.sv(70) @ 20798600: uvm_test_top.env.agent.monitor [MON] ---------------------------
+# UVM_INFO ../uvm/my_uvm_scoreboard.sv(122) @ 20798600: uvm_test_top.env.scoreboard [SCB] ALL 1 TESTS PASSED!
+# UVM_INFO ../uvm/my_uvm_scoreboard.sv(128) @ 20798600: uvm_test_top.env.scoreboard [SCB] Prediction Coverage: 17.8%
+# UVM_INFO ../uvm/my_uvm_scoreboard.sv(129) @ 20798600: uvm_test_top.env.scoreboard [SCB] Layer Activations Coverage: 0.0%
 # 
 # --- UVM Report Summary ---
 # 
@@ -193,11 +437,6 @@
 # [SEQ]     2
 # [TEST_DONE]     1
 # ** Note: $finish    : /vol/mentor/modelsim-2020.1/modeltech/linux_x86_64/../verilog_src/uvm-1.1d/src/base/uvm_root.svh(430)
-#    Time: 27986 ns  Iteration: 54  Instance: /my_uvm_tb
-# 1
-# Break in Task uvm_pkg/uvm_root::run_test at /vol/mentor/modelsim-2020.1/modeltech/linux_x86_64/../verilog_src/uvm-1.1d/src/base/uvm_root.svh line 430
-# 0 ps
-# 29385300 ps
-# Causality operation skipped due to absence of debug database file
-# End time: 17:57:43 on Mar 04,2026, Elapsed time: 0:56:39
+#    Time: 207986 ns  Iteration: 54  Instance: /my_uvm_tb
+# End time: 12:08:44 on Mar 06,2026, Elapsed time: 0:00:03
 # Errors: 0, Warnings: 0

@@ -7,7 +7,7 @@ def main():
     os.makedirs("../hardware/frontend/sv", exist_ok=True)
     
     for L, (in_size, out_size) in enumerate(layer_sizes):
-        filename = f"../source/layer_{L}_weights_biases.txt"
+        filename = f"../source/weights_and_biases/layer_{L}_weights_biases.txt"
         with open(filename, "r") as f:
             tokens = f.read().split()
         
@@ -18,12 +18,12 @@ def main():
         # Write individual neuron weight files
         for N in range(out_size):
             neuron_weights = weights[N*in_size : (N+1)*in_size]
-            with open(f"../source/layer{L}_neuron{N}_weights.txt", "w") as fw:
+            with open(f"../source/weights_and_biases/layer{L}_neuron{N}_weights.txt", "w") as fw:
                 for w in neuron_weights:
                     fw.write(f"{w}\n")
         
         # Write bias file
-        with open(f"../source/layer{L}_biases.txt", "w") as fb:
+        with open(f"../source/weights_and_biases/layer{L}_biases.txt", "w") as fb:
             for b in biases:
                 fb.write(f"{b}\n")
                 
@@ -77,7 +77,7 @@ module layer
             for N in range(out_size):
                 n_prefix = "if" if N == 0 else "else if"
                 f.write(f"                {n_prefix} (i == {N}) begin : n{N}\n")
-                f.write(f'                    neuron #(.INPUT_SIZE(INPUT_SIZE), .WEIGHT_FILE("../../../source/layer{L}_neuron{N}_weights.txt")) u_n(\n')
+                f.write(f'                    neuron #(.INPUT_SIZE(INPUT_SIZE), .WEIGHT_FILE("../../../source/weights_and_biases/layer{L}_neuron{N}_weights.txt")) u_n(\n')
                 f.write(f'                        .clk(clk), .reset(reset), .start(start), .bias(biases[i]), .valid_in(valid_in), .data_in(data_in), .valid_out(neuron_valid[i]), .data_out(neuron_out[i]));\n')
                 f.write(f"                end\n")
             f.write(f"            end\n")

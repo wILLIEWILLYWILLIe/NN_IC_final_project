@@ -1,5 +1,5 @@
 // =============================================================
-// Neural Network Top Module (4-Layer, Two-Process FSM)
+// Resource-Sharing NPU Top Module
 // =============================================================
 module nn_top
     import nn_pkg::*;
@@ -14,75 +14,99 @@ module nn_top
     output logic signed [DATA_WIDTH-1:0]  max_score
 );
 
+    // --- Input FIFO ---
     logic                          fifo_rd_en;
     logic signed [DATA_WIDTH-1:0]  fifo_dout;
     logic signed [DATA_WIDTH-1:0]  fifo_dout_reg;
     logic                          fifo_empty;
 
-    fifo #(.FIFO_DATA_WIDTH(DATA_WIDTH), .FIFO_BUFFER_SIZE(16)) u_input_fifo (
+    fifo #(.FIFO_DATA_WIDTH(DATA_WIDTH), .FIFO_BUFFER_SIZE(1024)) u_input_fifo (
         .reset(reset), .wr_clk(clk), .wr_en(wr_en), .din(din), .full(in_full),
         .rd_clk(clk), .rd_en(fifo_rd_en), .dout(fifo_dout), .empty(fifo_empty)
     );
 
-    always_ff @(posedge clk or posedge reset) begin
-        if (reset) fifo_dout_reg <= '0;
-        else fifo_dout_reg <= fifo_dout;
+    // fifo_dout_reg removed, using fifo_dout directly (FWFT FIFO)
+
+    // --- Activation RAM (1024 x 32) ---
+    logic [9:0]                    act_raddr;
+    logic signed [DATA_WIDTH-1:0]  act_rdata;
+    logic                          act_we;
+    logic [9:0]                    act_waddr;
+    logic signed [DATA_WIDTH-1:0]  act_wdata;
+
+    logic signed [DATA_WIDTH-1:0]  act_ram [0:1023];
+
+    always_ff @(posedge clk) begin
+        act_rdata <= act_ram[act_raddr];
+        if (act_we) begin
+            act_ram[act_waddr] <= act_wdata;
+        end
     end
 
-    // --- Layer 0 ---
-    logic                          l0_start;
-    logic                          l0_valid_in;
-    logic signed [DATA_WIDTH-1:0]  l0_data_in;
-    logic                          l0_valid_out;
-    logic signed [DATA_WIDTH-1:0]  l0_relu [LAYER0_OUT];
+    // Constants for memory map
+    localparam ACT_ADDR_IN  = 10'd0;    // size 784
+    localparam ACT_ADDR_L0  = 10'd784;  // size 128
+    localparam ACT_ADDR_L1  = 10'd912;  // size 64
+    localparam ACT_ADDR_L2  = 10'd976;  // size 32
+    localparam ACT_ADDR_L3  = 10'd1008; // size 10
 
-    layer #(.NUM_NEURONS(LAYER0_OUT), .INPUT_SIZE(LAYER0_IN), .LAYER_ID(0), .BIAS_FILE("../../../source/layer0_biases.txt")) u_layer0 (
-        .clk(clk), .reset(reset), .start(l0_start), .valid_in(l0_valid_in),
-        .data_in(l0_data_in), .valid_out(l0_valid_out), .results(l0_relu)
-    );
+    logic [9:0] src_offsets [4];
+    logic [9:0] dst_offsets [4];
+    logic [9:0] input_sizes [4];
+    logic [2:0] num_passes  [4];
+    logic       layer_relu  [4];
 
-    // --- Layer 1 ---
-    logic                          l1_start;
-    logic                          l1_valid_in;
-    logic signed [DATA_WIDTH-1:0]  l1_data_in;
-    logic                          l1_valid_out;
-    logic signed [DATA_WIDTH-1:0]  l1_relu [LAYER1_OUT];
+    assign src_offsets = '{ACT_ADDR_IN, ACT_ADDR_L0, ACT_ADDR_L1, ACT_ADDR_L2};
+    assign dst_offsets = '{ACT_ADDR_L0, ACT_ADDR_L1, ACT_ADDR_L2, ACT_ADDR_L3};
+    assign input_sizes = '{10'd784, 10'd128, 10'd64, 10'd32};
+    assign num_passes  = '{3'd4, 3'd2, 3'd1, 3'd1};
+    assign layer_relu  = '{1'b1, 1'b1, 1'b1, 1'b0};
 
-    layer #(.NUM_NEURONS(LAYER1_OUT), .INPUT_SIZE(LAYER1_IN), .LAYER_ID(1), .BIAS_FILE("../../../source/layer1_biases.txt")) u_layer1 (
-        .clk(clk), .reset(reset), .start(l1_start), .valid_in(l1_valid_in),
-        .data_in(l1_data_in), .valid_out(l1_valid_out), .results(l1_relu)
-    );
+    // --- MAC Array ---
+    logic                          mac_start_in;
+    logic                          mac_valid_in;
+    logic                          mac_last_in;
+    logic                          mac_relu_en;
+    logic [11:0]                   global_w_addr;
+    logic [3:0]                    mac_bias_addr;
 
-    // --- Layer 2 ---
-    logic                          l2_start;
-    logic                          l2_valid_in;
-    logic signed [DATA_WIDTH-1:0]  l2_data_in;
-    logic                          l2_valid_out;
-    logic signed [DATA_WIDTH-1:0]  l2_relu [LAYER2_OUT];
+    logic                          mac_valid_out [32];
+    logic signed [DATA_WIDTH-1:0]  mac_outs [32];
+    logic signed [DATA_WIDTH-1:0]  mac_outs_latched [32];
 
-    layer #(.NUM_NEURONS(LAYER2_OUT), .INPUT_SIZE(LAYER2_IN), .LAYER_ID(2), .BIAS_FILE("../../../source/layer2_biases.txt")) u_layer2 (
-        .clk(clk), .reset(reset), .start(l2_start), .valid_in(l2_valid_in),
-        .data_in(l2_data_in), .valid_out(l2_valid_out), .results(l2_relu)
-    );
+    for (genvar i = 0; i < 32; i++) begin : gen_mac_lanes
+        mac_lane #(.LANE_ID(i)) u_lane (
+            .clk(clk),
+            .reset(reset),
+            .start_in(mac_start_in),
+            .valid_in(mac_valid_in),
+            .last_in(mac_last_in),
+            .relu_en(mac_relu_en),
+            .data_in(act_rdata),
+            .weight_addr(global_w_addr),
+            .bias_addr(mac_bias_addr),
+            .valid_out(mac_valid_out[i]),
+            .out(mac_outs[i])
+        );
+    end
 
-    // --- Layer 3 ---
-    logic                          l3_start;
-    logic                          l3_valid_in;
-    logic signed [DATA_WIDTH-1:0]  l3_data_in;
-    logic                          l3_valid_out;
-    logic signed [DATA_WIDTH-1:0]  l3_relu [LAYER3_OUT];
-
-    layer #(.NUM_NEURONS(LAYER3_OUT), .INPUT_SIZE(LAYER3_IN), .LAYER_ID(3), .BIAS_FILE("../../../source/layer3_biases.txt")) u_layer3 (
-        .clk(clk), .reset(reset), .start(l3_start), .valid_in(l3_valid_in),
-        .data_in(l3_data_in), .valid_out(l3_valid_out), .results(l3_relu)
-    );
+    // Capture MAC outputs
+    always_ff @(posedge clk) begin
+        if (mac_valid_out[0]) begin
+            for (int i=0; i<32; i++) mac_outs_latched[i] <= mac_outs[i];
+        end
+    end
 
     // --- Argmax ---
     logic                          argmax_start;
-    logic signed [DATA_WIDTH-1:0]  argmax_scores [LAYER3_OUT];
+    logic signed [DATA_WIDTH-1:0]  argmax_scores [10];
     logic                          argmax_valid_out;
     logic [3:0]                    argmax_class;
     logic signed [DATA_WIDTH-1:0]  argmax_score;
+
+    for (genvar i=0; i<10; i++) begin : gen_argmax_in
+        assign argmax_scores[i] = mac_outs_latched[i];
+    end
 
     argmax #(.NUM_CLASSES(10)) u_argmax (
         .clk(clk), .reset(reset), .start(argmax_start), .scores(argmax_scores),
@@ -90,146 +114,147 @@ module nn_top
     );
 
     // --- FSM ---
-    typedef enum logic [4:0] {
+    typedef enum logic [3:0] {
         S_IDLE,
-        S_START_L0, S_RUN_L0, S_WAIT_L0,
-        S_START_L1, S_RUN_L1, S_WAIT_L1,
-        S_START_L2, S_RUN_L2, S_WAIT_L2,
-        S_START_L3, S_RUN_L3, S_WAIT_L3,
-        S_ARGMAX, S_DONE
+        S_LOAD_IMG_RUN,
+        S_MAC_PASS,
+        S_WAIT_MAC,
+        S_DRAIN,
+        S_ARGMAX,
+        S_DONE
     } state_t;
 
     state_t state, state_next;
-    logic [$clog2(LAYER0_IN+1)-1:0] l0_cnt, l0_cnt_next;
-    logic signed [DATA_WIDTH-1:0] l0_result [LAYER0_OUT], l0_result_next [LAYER0_OUT];
-    logic [$clog2(LAYER1_IN+1)-1:0] l1_cnt, l1_cnt_next;
-    logic signed [DATA_WIDTH-1:0] l1_result [LAYER1_OUT], l1_result_next [LAYER1_OUT];
-    logic [$clog2(LAYER2_IN+1)-1:0] l2_cnt, l2_cnt_next;
-    logic signed [DATA_WIDTH-1:0] l2_result [LAYER2_OUT], l2_result_next [LAYER2_OUT];
-    logic [$clog2(LAYER3_IN+1)-1:0] l3_cnt, l3_cnt_next;
-    logic signed [DATA_WIDTH-1:0] l3_result [LAYER3_OUT], l3_result_next [LAYER3_OUT];
+    logic [9:0] img_cnt, img_cnt_next;
+    logic [1:0] layer_idx, layer_idx_next;
+    logic [2:0] pass_idx, pass_idx_next;
+    logic [9:0] in_cnt, in_cnt_next;
+    logic [5:0] drain_cnt, drain_cnt_next;
+    logic [11:0] w_addr_r, w_addr_next;
 
     logic inf_done_r, inf_done_next;
     logic [3:0] pred_r, pred_next;
     logic signed [DATA_WIDTH-1:0] mscore_r, mscore_next;
 
-    // --- FSM Comb ---
-    always_comb begin
-        state_next      = state;
-        inf_done_next   = 1'b0;
-        pred_next       = pred_r;
-        mscore_next     = mscore_r;
-        fifo_rd_en      = 1'b0;
-        argmax_start    = 1'b0;
+    assign global_w_addr = w_addr_r;
 
-        l0_cnt_next = l0_cnt;
-        l0_start = 1'b0;
-        l0_valid_in = 1'b0;
-        l0_data_in = '0;
-        for (int i=0; i<LAYER0_OUT; i++) l0_result_next[i] = l0_result[i];
-        l1_cnt_next = l1_cnt;
-        l1_start = 1'b0;
-        l1_valid_in = 1'b0;
-        l1_data_in = '0;
-        for (int i=0; i<LAYER1_OUT; i++) l1_result_next[i] = l1_result[i];
-        l2_cnt_next = l2_cnt;
-        l2_start = 1'b0;
-        l2_valid_in = 1'b0;
-        l2_data_in = '0;
-        for (int i=0; i<LAYER2_OUT; i++) l2_result_next[i] = l2_result[i];
-        l3_cnt_next = l3_cnt;
-        l3_start = 1'b0;
-        l3_valid_in = 1'b0;
-        l3_data_in = '0;
-        for (int i=0; i<LAYER3_OUT; i++) l3_result_next[i] = l3_result[i];
-        for (int i=0; i<10; i++) argmax_scores[i] = l3_result[i];
+    always_comb begin
+        case (layer_idx)
+            0: mac_bias_addr = {1'b0, pass_idx};
+            1: mac_bias_addr = 4 + {1'b0, pass_idx};
+            2: mac_bias_addr = 6 + {1'b0, pass_idx};
+            3: mac_bias_addr = 7;
+            default: mac_bias_addr = 0;
+        endcase
+    end
+
+    logic [5:0] drain_limit;
+    assign drain_limit = (layer_idx == 3) ? 6'd10 : 6'd32;
+
+    always_comb begin
+        state_next     = state;
+        img_cnt_next   = img_cnt;
+        layer_idx_next = layer_idx;
+        pass_idx_next  = pass_idx;
+        in_cnt_next    = in_cnt;
+        drain_cnt_next = drain_cnt;
+        w_addr_next    = w_addr_r;
+        
+        inf_done_next  = 1'b0;
+        pred_next      = pred_r;
+        mscore_next    = mscore_r;
+
+        fifo_rd_en     = 1'b0;
+        act_we         = 1'b0;
+        act_waddr      = '0;
+        act_wdata      = '0;
+        act_raddr      = '0;
+
+        mac_start_in   = 1'b0;
+        mac_valid_in   = 1'b0;
+        mac_last_in    = 1'b0;
+        mac_relu_en    = 1'b0;
+
+        argmax_start   = 1'b0;
 
         case (state)
-            S_IDLE: if (!fifo_empty) state_next = S_START_L0;
-
-
-            S_START_L0: begin
-                l0_start = 1'b1;
-                l0_cnt_next = '0;
-                if (0 == 0) fifo_rd_en = 1'b1;
-                state_next = S_RUN_L0;
-            end
-            S_RUN_L0: begin
-                l0_valid_in = 1'b1;
-                l0_data_in = fifo_dout_reg;
-                l0_cnt_next = l0_cnt + 1;
-                if (l0_cnt < LAYER0_IN - 1) fifo_rd_en = 1'b1;
-                if (l0_cnt == LAYER0_IN - 1) state_next = S_WAIT_L0;
-            end
-            S_WAIT_L0: begin
-                if (l0_valid_out) begin
-                    for (int j=0; j<LAYER0_OUT; j++) l0_result_next[j] = l0_relu[j];
-                    state_next = S_START_L1;
+            S_IDLE: begin
+                if (!fifo_empty) begin
+                    state_next = S_LOAD_IMG_RUN;
+                    layer_idx_next = 0;
+                    pass_idx_next = 0;
+                    w_addr_next = 0;
+                    img_cnt_next = 0;
                 end
             end
-
-            S_START_L1: begin
-                l1_start = 1'b1;
-                l1_cnt_next = '0;
-                if (1 == 0) fifo_rd_en = 1'b1;
-                state_next = S_RUN_L1;
-            end
-            S_RUN_L1: begin
-                l1_valid_in = 1'b1;
-                l1_data_in = l0_result[l1_cnt];
-                l1_cnt_next = l1_cnt + 1;
-                if (l1_cnt == LAYER1_IN - 1) state_next = S_WAIT_L1;
-            end
-            S_WAIT_L1: begin
-                if (l1_valid_out) begin
-                    for (int j=0; j<LAYER1_OUT; j++) l1_result_next[j] = l1_relu[j];
-                    state_next = S_START_L2;
+            
+            S_LOAD_IMG_RUN: begin
+                act_we = 1'b1;
+                act_waddr = ACT_ADDR_IN + img_cnt;
+                act_wdata = fifo_dout;
+                img_cnt_next = img_cnt + 1;
+                
+                fifo_rd_en = 1'b1; // Advance FWFT FIFO every cycle
+                
+                if (img_cnt == 784 - 1) begin
+                    state_next = S_MAC_PASS;
+                    in_cnt_next = 0;
                 end
             end
-
-            S_START_L2: begin
-                l2_start = 1'b1;
-                l2_cnt_next = '0;
-                if (2 == 0) fifo_rd_en = 1'b1;
-                state_next = S_RUN_L2;
-            end
-            S_RUN_L2: begin
-                l2_valid_in = 1'b1;
-                l2_data_in = l1_result[l2_cnt];
-                l2_cnt_next = l2_cnt + 1;
-                if (l2_cnt == LAYER2_IN - 1) state_next = S_WAIT_L2;
-            end
-            S_WAIT_L2: begin
-                if (l2_valid_out) begin
-                    for (int j=0; j<LAYER2_OUT; j++) l2_result_next[j] = l2_relu[j];
-                    state_next = S_START_L3;
+            
+            S_MAC_PASS: begin
+                act_raddr = src_offsets[layer_idx] + in_cnt;
+                
+                mac_start_in = (in_cnt == 0);
+                mac_valid_in = 1'b1;
+                mac_last_in  = (in_cnt == input_sizes[layer_idx] - 1);
+                mac_relu_en  = layer_relu[layer_idx];
+                
+                in_cnt_next = in_cnt + 1;
+                w_addr_next = w_addr_r + 1;
+                
+                if (in_cnt == input_sizes[layer_idx] - 1) begin
+                    state_next = S_WAIT_MAC;
                 end
             end
-
-            S_START_L3: begin
-                l3_start = 1'b1;
-                l3_cnt_next = '0;
-                if (3 == 0) fifo_rd_en = 1'b1;
-                state_next = S_RUN_L3;
-            end
-            S_RUN_L3: begin
-                l3_valid_in = 1'b1;
-                l3_data_in = l2_result[l3_cnt];
-                l3_cnt_next = l3_cnt + 1;
-                if (l3_cnt == LAYER3_IN - 1) state_next = S_WAIT_L3;
-            end
-            S_WAIT_L3: begin
-                if (l3_valid_out) begin
-                    for (int j=0; j<LAYER3_OUT; j++) l3_result_next[j] = l3_relu[j];
-                    state_next = S_ARGMAX;
+            
+            S_WAIT_MAC: begin
+                if (mac_valid_out[0]) begin
+                    state_next = S_DRAIN;
+                    drain_cnt_next = 0;
                 end
             end
-
+            
+            S_DRAIN: begin
+                act_we = 1'b1;
+                act_waddr = dst_offsets[layer_idx] + (pass_idx * 32) + drain_cnt;
+                act_wdata = mac_outs_latched[drain_cnt];
+                
+                drain_cnt_next = drain_cnt + 1;
+                
+                if (drain_cnt == drain_limit - 1) begin
+                    if (pass_idx == num_passes[layer_idx] - 1) begin
+                        if (layer_idx == 3) begin
+                            state_next = S_ARGMAX;
+                        end else begin
+                            layer_idx_next = layer_idx + 1;
+                            pass_idx_next = 0;
+                            in_cnt_next = 0;
+                            state_next = S_MAC_PASS;
+                        end
+                    end else begin
+                        pass_idx_next = pass_idx + 1;
+                        in_cnt_next = 0;
+                        state_next = S_MAC_PASS;
+                    end
+                end
+            end
+            
             S_ARGMAX: begin
                 argmax_start = 1'b1;
-                for (int i=0; i<10; i++) argmax_scores[i] = l3_result[i];
                 state_next = S_DONE;
             end
+            
             S_DONE: begin
                 if (argmax_valid_out) begin
                     pred_next = argmax_class;
@@ -238,38 +263,34 @@ module nn_top
                     state_next = S_IDLE;
                 end
             end
+            
             default: state_next = S_IDLE;
         endcase
     end
 
-    // --- FSM Seq ---
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
             state <= S_IDLE;
+            img_cnt <= '0;
+            layer_idx <= '0;
+            pass_idx <= '0;
+            in_cnt <= '0;
+            drain_cnt <= '0;
+            w_addr_r <= '0;
             inf_done_r <= 1'b0;
             pred_r <= '0;
             mscore_r <= '0;
-            l0_cnt <= '0;
-            for (int i=0; i<LAYER0_OUT; i++) l0_result[i] <= '0;
-            l1_cnt <= '0;
-            for (int i=0; i<LAYER1_OUT; i++) l1_result[i] <= '0;
-            l2_cnt <= '0;
-            for (int i=0; i<LAYER2_OUT; i++) l2_result[i] <= '0;
-            l3_cnt <= '0;
-            for (int i=0; i<LAYER3_OUT; i++) l3_result[i] <= '0;
         end else begin
             state <= state_next;
+            img_cnt <= img_cnt_next;
+            layer_idx <= layer_idx_next;
+            pass_idx <= pass_idx_next;
+            in_cnt <= in_cnt_next;
+            drain_cnt <= drain_cnt_next;
+            w_addr_r <= w_addr_next;
             inf_done_r <= inf_done_next;
             pred_r <= pred_next;
             mscore_r <= mscore_next;
-            l0_cnt <= l0_cnt_next;
-            for (int i=0; i<LAYER0_OUT; i++) l0_result[i] <= l0_result_next[i];
-            l1_cnt <= l1_cnt_next;
-            for (int i=0; i<LAYER1_OUT; i++) l1_result[i] <= l1_result_next[i];
-            l2_cnt <= l2_cnt_next;
-            for (int i=0; i<LAYER2_OUT; i++) l2_result[i] <= l2_result_next[i];
-            l3_cnt <= l3_cnt_next;
-            for (int i=0; i<LAYER3_OUT; i++) l3_result[i] <= l3_result_next[i];
         end
     end
 

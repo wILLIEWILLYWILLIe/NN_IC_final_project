@@ -39,22 +39,22 @@ class my_uvm_monitor extends uvm_monitor;
             end
         join_none
 
-        // Wait for inference_done
+        // Wait for inference_done directly
         forever begin
-            @(posedge vif.clock);
-            #1;
-            if (vif.inference_done) begin
-                done_cycle = cycle_count;
-                tr = my_uvm_transaction::type_id::create("tr");
-                tr.pixel_data = new[2];
-                // Pack result into transaction: [0]=predicted_class, [1]=max_score
-                tr.pixel_data[0] = vif.predicted_class;
-                tr.pixel_data[1] = vif.max_score;
+            @(posedge vif.inference_done);
+            done_cycle = cycle_count;
+            tr = my_uvm_transaction::type_id::create("tr");
+            tr.pixel_data = new[2];
+            // Pack result into transaction: [0]=predicted_class, [1]=max_score
+            tr.pixel_data[0] = vif.predicted_class;
+            tr.pixel_data[1] = vif.max_score;
 
-                `uvm_info("MON", $sformatf("Inference done! Predicted class: %0d, Max score: %0d",
-                          vif.predicted_class, vif.max_score), UVM_LOW)
-                mon_ap.write(tr);
-            end
+            `uvm_info("MON", $sformatf("Inference done! Predicted class: %0d, Max score: %0d",
+                      vif.predicted_class, vif.max_score), UVM_LOW)
+            mon_ap.write(tr);
+            
+            // Wait for it to deassert so we don't double-sample
+            @(negedge vif.inference_done);
         end
     endtask
 

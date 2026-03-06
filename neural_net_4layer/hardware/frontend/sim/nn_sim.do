@@ -5,8 +5,7 @@ vmap work work
 # Compile source files
 vlog -sv ../sv/nn_pkg.sv
 vlog -sv ../sv/fifo.sv
-vlog -sv ../sv/neuron.sv
-vlog -sv ../sv/layer.sv
+vlog -sv ../sv/npu_mac.sv
 vlog -sv ../sv/argmax.sv
 vlog -sv ../sv/nn_top.sv
 

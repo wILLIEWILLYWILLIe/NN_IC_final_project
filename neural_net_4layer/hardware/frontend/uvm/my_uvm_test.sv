@@ -21,8 +21,8 @@ class my_uvm_test extends uvm_test;
     virtual task run_phase(uvm_phase phase);
         phase.raise_objection(this);
         seq.start(env.agent.sequencer);
-        // Wait for inference to complete (816 cycles × 10ns + margin)
-        #20000;
+        // Wait for inference to complete (TDM architecture takes ~3500 cycles * 10ns = 35000ns minimum)
+        #200000;
         phase.drop_objection(this);
     endtask
 endclass

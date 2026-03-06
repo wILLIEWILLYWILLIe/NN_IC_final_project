@@ -126,7 +126,7 @@ int main()
     for (int l = 0; l < NUM_LAYERS; l++)
     {
         char filename[256];
-        snprintf(filename, sizeof(filename), "../source/layer_%d_weights_biases.txt", l);
+        snprintf(filename, sizeof(filename), "../source/weights_and_biases/layer_%d_weights_biases.txt", l);
         printf("Loading Layer %d from %s ...\n", l, filename);
         FILE *f = fopen(filename, "r");
         if (!f) { printf("ERROR: Could not open %s\n", filename); return 1; }

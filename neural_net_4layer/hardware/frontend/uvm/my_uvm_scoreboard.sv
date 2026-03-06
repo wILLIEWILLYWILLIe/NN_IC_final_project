@@ -101,17 +101,11 @@ class my_uvm_scoreboard extends uvm_scoreboard;
         // Prediction Coverage sampling
         cov_predicted = predicted;
         cov_expected  = expected_label;
+        // Prediction Coverage sampling
+        cov_predicted = predicted;
+        cov_expected  = expected_label;
         cov_correct   = (predicted == expected_label);
         cg_prediction.sample();
-
-        // Layer Activations Coverage sampling (sample all neurons up to 128)
-        for (int i = 0; i < 128; i++) begin
-            cov_l0_out = vif.l0_relu[i];
-            cov_l1_out = (i < 64) ? vif.l1_relu[i] : '0;
-            cov_l2_out = (i < 32) ? vif.l2_relu[i] : '0;
-            cov_l3_out = (i < 10) ? vif.l3_relu[i] : '0;
-            cg_layer_activations.sample();
-        end
 
         if (predicted == expected_label) begin
             `uvm_info("SCB", $sformatf("TEST PASSED! Predicted: %0d, Expected: %0d, Score: %0d",

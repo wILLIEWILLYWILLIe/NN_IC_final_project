@@ -39,13 +39,7 @@ module my_uvm_tb;
         .max_score       (vif.max_score)
     );
 
-    // Pass internal layer outputs to interface for coverage
-    always_comb begin
-        for (int i = 0; i < 128; i++) vif.l0_relu[i] = dut.l0_relu[i];
-        for (int i = 0; i < 64; i++)  vif.l1_relu[i] = dut.l1_relu[i];
-        for (int i = 0; i < 32; i++)  vif.l2_relu[i] = dut.l2_relu[i];
-        for (int i = 0; i < 10; i++)  vif.l3_relu[i] = dut.l3_relu[i];
-    end
+    // Removed parallel layer outputs (lX_relu) to interface - no longer exist in TDM architecture
 
     initial begin
         uvm_config_db#(virtual nn_if)::set(uvm_root::get(), "*", "vif", vif);

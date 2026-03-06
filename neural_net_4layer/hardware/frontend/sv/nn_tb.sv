@@ -114,10 +114,10 @@ module nn_tb;
 
         // Write all input data into FIFO
         for (int i = 0; i < NUM_INPUTS; i++) begin
-            @(posedge clk);
             while (in_full) @(posedge clk);
             wr_en <= 1'b1;
             din   <= $signed(input_data[i]);
+            @(posedge clk);
         end
         @(posedge clk);
         wr_en <= 1'b0;
@@ -138,13 +138,7 @@ module nn_tb;
         $display("True Label       : %0d", true_label);
         $display("Max Score        : %0d (0x%08h)", max_score, max_score);
         $display("--------------------------------------------");
-        $display("DEBUG Layer 0 out: [%0d, %0d, %0d...]", u_dut.l0_result[0], u_dut.l0_result[1], u_dut.l0_result[2]);
-        $display("DEBUG Layer 1 out: [%0d, %0d, %0d...]", u_dut.l1_result[0], u_dut.l1_result[1], u_dut.l1_result[2]);
-        $display("DEBUG Layer 2 out: [%0d, %0d, %0d...]", u_dut.l2_result[0], u_dut.l2_result[1], u_dut.l2_result[2]);
-        $display("DEBUG Layer 3 out: [%0d, %0d, %0d...]", u_dut.l3_result[0], u_dut.l3_result[1], u_dut.l3_result[2]);
-        $display("Output Probabilities Output (Layer 3):");
-        for (int i=0; i<10; i++)
-             $display("  Class %0d: %0d", i, u_dut.l3_result[i]);
+        // Internal layer signals removed for NPU architecture
         $display("DUT FSM Cycles   : %0d", cycle_cnt);
         $display("  Layer 0 (MAC)  : ~%0d cycles (784 MACs + overhead)", LAYER0_IN);
         $display("  Layer 1 (MAC)  : ~%0d cycles (128 MACs + overhead)", LAYER1_IN);

@@ -46,10 +46,10 @@ endpackage
 
 def generate_nn_top():
     layers = [
-        (0, "LAYER0_IN", "LAYER0_OUT", "../../../source/layer0_biases.txt"),
-        (1, "LAYER1_IN", "LAYER1_OUT", "../../../source/layer1_biases.txt"),
-        (2, "LAYER2_IN", "LAYER2_OUT", "../../../source/layer2_biases.txt"),
-        (3, "LAYER3_IN", "LAYER3_OUT", "../../../source/layer3_biases.txt")
+        (0, "LAYER0_IN", "LAYER0_OUT", "../../../source/weights_and_biases/layer0_biases.txt"),
+        (1, "LAYER1_IN", "LAYER1_OUT", "../../../source/weights_and_biases/layer1_biases.txt"),
+        (2, "LAYER2_IN", "LAYER2_OUT", "../../../source/weights_and_biases/layer2_biases.txt"),
+        (3, "LAYER3_IN", "LAYER3_OUT", "../../../source/weights_and_biases/layer3_biases.txt")
     ]
     
     with open("../hardware/frontend/sv/nn_top.sv", "w") as f:
