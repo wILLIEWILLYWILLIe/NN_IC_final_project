@@ -24,6 +24,11 @@ current_design nn_top
 read_sdc ./constraints.sdc
 
 # 5. Synthesis Steps
+# Preserve FSM and key control signals for GLS visibility/debugging
+# Use standard 'preserve' attribute on instances
+set_db [get_db insts *u_input_fifo] .preserve true
+set_db [get_db insts *u_argmax] .preserve true
+
 syn_generic
 syn_map
 syn_opt

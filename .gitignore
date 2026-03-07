@@ -24,3 +24,18 @@ python_train/data/
 **/*.key
 **/work/
 **/cov_work/
+
+# Ignore large timing/physical design files
+*.sdf
+*.sdf.gz
+*.dat
+*.enc
+
+# Ignore tool logs and reports
+*.log
+*.logv*
+*.cmd
+*.cmd*
+#*.rpt
+timingReports/
+clock_report/

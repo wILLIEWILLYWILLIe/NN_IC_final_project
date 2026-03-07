@@ -71,19 +71,22 @@ module nn_tb;
     end
 
     // ---------------------------------------------------------
-    // Cycle counter — counts every clk while DUT FSM is active
-    // (i.e., from FIFO_PREFETCH to DONE, not IDLE)
+    // Cycle counter — Simplified for GLS (no hierarchical refs)
     // ---------------------------------------------------------
     integer cycle_cnt;
-    logic   dut_active;
-
-    assign dut_active = (u_dut.state != u_dut.S_IDLE);
+    logic   counting;
 
     always_ff @(posedge clk or posedge reset) begin
-        if (reset)
+        if (reset) begin
             cycle_cnt <= 0;
-        else if (dut_active)
-            cycle_cnt <= cycle_cnt + 1;
+            counting <= 0;
+        end else begin
+            if (wr_en) counting <= 1;
+            if (inference_done) counting <= 0;
+            
+            if (counting && !inference_done)
+                cycle_cnt <= cycle_cnt + 1;
+        end
     end
 
     // Total sim cycle counter (from reset release)
@@ -103,14 +106,28 @@ module nn_tb;
         reset = 1'b1;
         wr_en = 1'b0;
         din   = '0;
-        repeat (10) @(posedge clk);
+        repeat (50) @(posedge clk); // Extended reset for GLS
         reset = 1'b0;
-        repeat (5) @(posedge clk);
+        repeat (10) @(posedge clk);
 
         $display("============================================");
         $display("Neural Network Testbench");
         $display("============================================");
         $display("Loading %0d inputs from %s", NUM_INPUTS, INPUT_FILE);
+
+        // Force wr_clk if it was optimized away/unconnected in netlist
+        force u_dut.u_input_fifo.wr_clk = clk;
+        force u_dut.u_input_fifo.rd_clk = clk;
+
+        // Monitor inputs/outputs
+        fork
+            forever @(posedge clk) begin
+                if (wr_en) $display("[%0t] DEBUG: wr_en=1, din=%0h, in_full=%b", $time, din, in_full);
+                if (u_dut.fifo_empty === 1'b0) $display("[%0t] DEBUG: FIFO NOT EMPTY", $time);
+                if (u_dut.n_471219) $display("[%0t] DEBUG: FIFO rd_en=1, dout=%0h", $time, u_dut.fifo_dout);
+                if (inference_done) $display("[%0t] DEBUG: inference_done asserted!", $time);
+            end
+        join_none
 
         // Write all input data into FIFO
         for (int i = 0; i < NUM_INPUTS; i++) begin

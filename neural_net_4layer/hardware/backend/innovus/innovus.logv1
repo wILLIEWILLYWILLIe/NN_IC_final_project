@@ -1,0 +1,486 @@
+[03/07 15:10:04      0s] 
+[03/07 15:10:04      0s] Cadence Innovus(TM) Implementation System.
+[03/07 15:10:04      0s] Copyright 2016 Cadence Design Systems, Inc. All rights reserved worldwide.
+[03/07 15:10:04      0s] 
+[03/07 15:10:04      0s] Version:	v16.20-p002_1, built Tue Nov 8 11:31:23 PST 2016
+[03/07 15:10:04      0s] Options:	
+[03/07 15:10:04      0s] Date:		Sat Mar  7 15:10:04 2026
+[03/07 15:10:04      0s] Host:		finagle.wot.ece.northwestern.edu (x86_64 w/Linux 4.18.0-553.89.1.el8_10.x86_64) (12cores*48cpus*Intel(R) Xeon(R) Gold 5317 CPU @ 3.00GHz 18432KB)
+[03/07 15:10:04      0s] OS:		Red Hat Enterprise Linux release 8.10 (Ootpa)
+[03/07 15:10:04      0s] 
+[03/07 15:10:04      0s] License:
+[03/07 15:10:04      0s] 		invs	Innovus Implementation System	16.2	checkout succeeded
+[03/07 15:10:04      0s] 		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required CPU count.
+[03/07 15:10:09      5s] @(#)CDS: Innovus v16.20-p002_1 (64bit) 11/08/2016 11:31 (Linux 2.6.18-194.el5)
+[03/07 15:10:09      5s] @(#)CDS: NanoRoute 16.20-p002_1 NR161103-1425/16_20-UB (database version 2.30, 354.6.1) {superthreading v1.34}
+[03/07 15:10:09      5s] @(#)CDS: AAE 16.20-p004 (64bit) 11/08/2016 (Linux 2.6.18-194.el5)
+[03/07 15:10:09      5s] @(#)CDS: CTE 16.20-p008_1 () Oct 29 2016 08:26:57 ( )
+[03/07 15:10:09      5s] @(#)CDS: SYNTECH 16.20-p001_1 () Oct 27 2016 11:33:00 ( )
+[03/07 15:10:09      5s] @(#)CDS: CPE v16.20-p011
+[03/07 15:10:09      5s] @(#)CDS: IQRC/TQRC 15.2.5-s803 (64bit) Tue Sep 13 18:23:58 PDT 2016 (Linux 2.6.18-194.el5)
+[03/07 15:10:09      5s] @(#)CDS: OA 22.50-p051 Thu Aug  4 00:05:16 2016
+[03/07 15:10:09      5s] @(#)CDS: SGN 10.10-p124 (19-Aug-2014) (64 bit executable)
+[03/07 15:10:09      5s] @(#)CDS: RCDB 11.8
+[03/07 15:10:09      5s] --- Running on finagle.wot.ece.northwestern.edu (x86_64 w/Linux 4.18.0-553.89.1.el8_10.x86_64) (12cores*48cpus*Intel(R) Xeon(R) Gold 5317 CPU @ 3.00GHz 18432KB) ---
+[03/07 15:10:09      5s] Create and set the environment variable TMPDIR to /tmp/innovus_temp_3184206_finagle.wot.ece.northwestern.edu_gel8580_5c8F3Y.
+
+[03/07 15:10:09      5s] 
+[03/07 15:10:09      5s] **INFO:  MMMC transition support version v31-84 
+[03/07 15:10:09      5s] 
+[03/07 15:10:09      5s] <CMD> set_global _enable_mmmc_by_default_flow      $CTE::mmmc_default
+[03/07 15:10:09      5s] <CMD> suppressMessage ENCEXT-2799
+[03/07 15:10:09      5s] <CMD> getDrawView
+[03/07 15:10:09      5s] <CMD> loadWorkspace -name Physical
+[03/07 15:10:09      5s] <CMD> win
+[03/07 15:10:40      6s] <CMD> restoreDesign nn_top_final.enc.dat nn_top
+[03/07 15:10:40      6s] Set Default Input Pin Transition as 0.1 ps.
+[03/07 15:10:40      6s] **WARN: (GLOBAL-100):	Global 'timing_enable_default_delay_arc' has become obsolete. It will be removed in the next release.
+[03/07 15:10:40      6s] #- Begin Load MMMC data ... (date=03/07 15:10:40, mem=492.7M)
+[03/07 15:10:40      6s] #- End Load MMMC data ... (date=03/07 15:10:40, total cpu=0:00:00.0, real=0:00:00.0, peak res=52.6M, current mem=492.7M)
+[03/07 15:10:40      6s] **WARN: (GLOBAL-100):	Global 'timing_disable_backward_compatible_mmmc_mode' has become obsolete. It will be removed in the next release.
+[03/07 15:10:40      6s] 
+[03/07 15:10:40      6s] Loading LEF file /home/gel8580/NN_IC_final_project/neural_net_4layer/hardware/backend/innovus/nn_top_final.enc.dat/libs/lef/NangateOpenCellLibrary.lef ...
+[03/07 15:10:40      6s] Set DBUPerIGU to M2 pitch 380.
+[03/07 15:10:40      6s] 
+[03/07 15:10:40      6s] viaInitial starts at Sat Mar  7 15:10:40 2026
+viaInitial ends at Sat Mar  7 15:10:40 2026
+Loading view definition file from nn_top_final.enc.dat/viewDefinition.tcl
+[03/07 15:10:40      6s] Reading lib timing library '/vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib' ...
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AND2_X1' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AND2_X2' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AND2_X4' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AND3_X1' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AND3_X2' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AND3_X4' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AND4_X1' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AND4_X2' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AND4_X4' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AOI21_X1' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AOI21_X2' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AOI21_X4' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AOI22_X1' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AOI22_X2' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AOI22_X4' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AOI211_X1' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AOI211_X2' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AOI211_X4' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AOI221_X1' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] **WARN: (TECHLIB-436):	Attribute 'max_fanout' on 'output/inout' pin 'ZN' of cell 'AOI221_X2' is not defined in the library. (File /vol/ece303/genus_tutorial/NangateOpenCellLibrary_typical.lib)
+[03/07 15:10:40      6s] Message <TECHLIB-436> has exceeded the message display limit of '20'. Use 'set_message -no_limit -id list_of_msgIDs' to reset the message limit.
+[03/07 15:10:41      6s] Read 134 cells in library 'NangateOpenCellLibrary' 
+[03/07 15:10:41      6s] *** End library_loading (cpu=0.00min, mem=0.0M, fe_cpu=0.11min, fe_real=0.62min, fe_mem=516.9M) ***
+[03/07 15:10:41      6s] #- Begin Load netlist data ... (date=03/07 15:10:41, mem=516.9M)
+[03/07 15:10:41      6s] *** Begin netlist parsing (mem=516.9M) ***
+[03/07 15:10:41      6s] Created 134 new cells from 1 timing libraries.
+[03/07 15:10:41      6s] Reading netlist ...
+[03/07 15:10:41      6s] Backslashed names will retain backslash and a trailing blank character.
+[03/07 15:10:41      6s] Reading verilogBinary netlist '/home/gel8580/NN_IC_final_project/neural_net_4layer/hardware/backend/innovus/nn_top_final.enc.dat/nn_top.v.bin'
+[03/07 15:10:41      6s] Reading binary database version 1
+[03/07 15:10:41      6s] 
+[03/07 15:10:41      6s] *** Memory Usage v#1 (Current mem = 1103.910M, initial mem = 183.422M) ***
+[03/07 15:10:41      6s] *** End netlist parsing (cpu=0:00:00.3, real=0:00:00.0, mem=1103.9M) ***
+[03/07 15:10:41      6s] #- End Load netlist data ... (date=03/07 15:10:41, total cpu=0:00:00.3, real=0:00:00.0, peak res=158.8M, current mem=1103.9M)
+[03/07 15:10:41      6s] Set top cell to nn_top.
+[03/07 15:10:41      7s] Hooked 134 DB cells to tlib cells.
+[03/07 15:10:41      7s] Starting recursive module instantiation check.
+[03/07 15:10:41      7s] No recursion found.
+[03/07 15:10:41      7s] Building hierarchical netlist for Cell nn_top ...
+[03/07 15:10:41      7s] *** Netlist is unique.
+[03/07 15:10:41      7s] ** info: there are 162 modules.
+[03/07 15:10:41      7s] ** info: there are 167166 stdCell insts.
+[03/07 15:10:41      7s] 
+[03/07 15:10:41      7s] *** Memory Usage v#1 (Current mem = 1127.910M, initial mem = 183.422M) ***
+[03/07 15:10:41      7s] *info: set bottom ioPad orient R0
+[03/07 15:10:41      7s] Generated pitch 1.68 in metal10 is different from 1.6 defined in technology file in preferred direction.
+[03/07 15:10:41      7s] Generated pitch 0.84 in metal8 is different from 0.8 defined in technology file in preferred direction.
+[03/07 15:10:41      7s] Generated pitch 0.84 in metal7 is different from 0.8 defined in technology file in preferred direction.
+[03/07 15:10:41      7s] Set Default Net Delay as 1000 ps.
+[03/07 15:10:41      7s] Set Default Net Load as 0.5 pF. 
+[03/07 15:10:41      7s] Set Default Input Pin Transition as 0.1 ps.
+[03/07 15:10:41      7s] Loading preference file nn_top_final.enc.dat/gui.pref.tcl ...
+[03/07 15:10:41      8s] Applying the recommended capacitance filtering threshold values for 45nm process node: total_c_th=0, relative_c_th=1 and coupling_c_th=0.1.
+[03/07 15:10:41      8s] 	These values will be used by all post-route extraction engines, including tQuantus, IQRC and Quantus QRC extraction.
+[03/07 15:10:41      8s] 	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all engines.
+[03/07 15:10:41      8s] 	The accuracy mode for postRoute effortLevel low extraction will be set to 'high'.
+[03/07 15:10:41      8s] 	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction mode will be 'medium' if Quantus QRC technology file is specified else 'low'.
+[03/07 15:10:41      8s] Updating process node dependent CCOpt properties for the 45nm process node.
+[03/07 15:10:42      8s] Extraction setup Started 
+[03/07 15:10:42      8s] Initializing multi-corner RC extraction with 1 active RC Corners ...
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2773):	The via resistance between layers M0 and M1 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[03/07 15:10:42      8s] Type 'man IMPEXT-2773' for more detail.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2773):	The via resistance between layers M1 and M2 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[03/07 15:10:42      8s] Type 'man IMPEXT-2773' for more detail.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2773):	The via resistance between layers M2 and M3 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[03/07 15:10:42      8s] Type 'man IMPEXT-2773' for more detail.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2773):	The via resistance between layers M3 and M4 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[03/07 15:10:42      8s] Type 'man IMPEXT-2773' for more detail.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2773):	The via resistance between layers M4 and M5 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[03/07 15:10:42      8s] Type 'man IMPEXT-2773' for more detail.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2773):	The via resistance between layers M5 and M6 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[03/07 15:10:42      8s] Type 'man IMPEXT-2773' for more detail.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2773):	The via resistance between layers M6 and M7 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[03/07 15:10:42      8s] Type 'man IMPEXT-2773' for more detail.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2773):	The via resistance between layers M7 and M8 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[03/07 15:10:42      8s] Type 'man IMPEXT-2773' for more detail.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2773):	The via resistance between layers M8 and M9 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[03/07 15:10:42      8s] Type 'man IMPEXT-2773' for more detail.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2773):	The via resistance between layers M9 and M10 could not be determined from the LEF technology file because the via resistance specification is missing. A default of 4 Ohms will be used as via resistance between these layers.
+[03/07 15:10:42      8s] Type 'man IMPEXT-2773' for more detail.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M1 is not defined in the cap table. Therefore, the LEF value 0.38 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M2 is not defined in the cap table. Therefore, the LEF value 0.25 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M3 is not defined in the cap table. Therefore, the LEF value 0.25 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M4 is not defined in the cap table. Therefore, the LEF value 0.21 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M5 is not defined in the cap table. Therefore, the LEF value 0.21 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M6 is not defined in the cap table. Therefore, the LEF value 0.21 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M7 is not defined in the cap table. Therefore, the LEF value 0.075 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M8 is not defined in the cap table. Therefore, the LEF value 0.075 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M9 is not defined in the cap table. Therefore, the LEF value 0.03 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[03/07 15:10:42      8s] **WARN: (IMPEXT-2766):	The sheet resistance for layer M10 is not defined in the cap table. Therefore, the LEF value 0.03 will be used instead. To avoid this message, update the relevant cap table to include the sheet resistance for the specified layer and read it back in.
+[03/07 15:10:42      8s] Summary of Active RC-Corners : 
+[03/07 15:10:42      8s]  
+[03/07 15:10:42      8s]  Analysis View: an
+[03/07 15:10:42      8s]     RC-Corner Name        : rc
+[03/07 15:10:42      8s]     RC-Corner Index       : 0
+[03/07 15:10:42      8s]     RC-Corner Temperature : 25 Celsius
+[03/07 15:10:42      8s]     RC-Corner Cap Table   : ''
+[03/07 15:10:42      8s]     RC-Corner PreRoute Res Factor         : 1
+[03/07 15:10:42      8s]     RC-Corner PreRoute Cap Factor         : 1
+[03/07 15:10:42      8s]     RC-Corner PostRoute Res Factor        : 1 {1 1 1}
+[03/07 15:10:42      8s]     RC-Corner PostRoute Cap Factor        : 1 {1 1 1}
+[03/07 15:10:42      8s]     RC-Corner PostRoute XCap Factor       : 1 {1 1 1}
+[03/07 15:10:42      8s]     RC-Corner PreRoute Clock Res Factor   : 1	[Derived from Cap Table]
+[03/07 15:10:42      8s]     RC-Corner PreRoute Clock Cap Factor   : 1	[Derived from Cap Table]
+[03/07 15:10:42      8s]     RC-Corner PostRoute Clock Cap Factor  : 1 {1 1 1} 	[Derived from postRoute_cap (effortLevel low)]
+[03/07 15:10:42      8s]     RC-Corner PostRoute Clock Res Factor  : 1 {1 1 1} 	[Derived from postRoute_res (effortLevel low)]
+[03/07 15:10:42      8s] *Info: initialize multi-corner CTS.
+[03/07 15:10:42      8s] Reading timing constraints file '/home/gel8580/NN_IC_final_project/neural_net_4layer/hardware/backend/innovus/nn_top_final.enc.dat/mmmc/modes/sdc/sdc.sdc' ...
+[03/07 15:10:42      8s] Current (total cpu=0:00:08.2, real=0:00:38.0, peak res=417.9M, current mem=859.9M)
+[03/07 15:10:42      8s] INFO (CTE): Constraints read successfully.
+[03/07 15:10:42      8s] Ending "Constraint file reading stats" (total cpu=0:00:00.1, real=0:00:00.0, peak res=436.6M, current mem=880.1M)
+[03/07 15:10:42      8s] Current (total cpu=0:00:08.3, real=0:00:38.0, peak res=436.6M, current mem=880.1M)
+[03/07 15:10:42      8s] Summary for sequential cells identification: 
+[03/07 15:10:42      8s] Identified SBFF number: 16
+[03/07 15:10:42      8s] Identified MBFF number: 0
+[03/07 15:10:42      8s] Identified SB Latch number: 0
+[03/07 15:10:42      8s] Identified MB Latch number: 0
+[03/07 15:10:42      8s] Not identified SBFF number: 0
+[03/07 15:10:42      8s] Not identified MBFF number: 0
+[03/07 15:10:42      8s] Not identified SB Latch number: 0
+[03/07 15:10:42      8s] Not identified MB Latch number: 0
+[03/07 15:10:42      8s] Number of sequential cells which are not FFs: 13
+[03/07 15:10:42      8s] 
+[03/07 15:10:42      8s] Total number of combinational cells: 99
+[03/07 15:10:42      8s] Total number of sequential cells: 29
+[03/07 15:10:42      8s] Total number of tristate cells: 6
+[03/07 15:10:42      8s] Total number of level shifter cells: 0
+[03/07 15:10:42      8s] Total number of power gating cells: 0
+[03/07 15:10:42      8s] Total number of isolation cells: 0
+[03/07 15:10:42      8s] Total number of power switch cells: 0
+[03/07 15:10:42      8s] Total number of pulse generator cells: 0
+[03/07 15:10:42      8s] Total number of always on buffers: 0
+[03/07 15:10:42      8s] Total number of retention cells: 0
+[03/07 15:10:42      8s] List of usable buffers: BUF_X1 BUF_X2 BUF_X4 BUF_X8 BUF_X16 BUF_X32 CLKBUF_X1 CLKBUF_X2 CLKBUF_X3
+[03/07 15:10:42      8s] Total number of usable buffers: 9
+[03/07 15:10:42      8s] List of unusable buffers:
+[03/07 15:10:42      8s] Total number of unusable buffers: 0
+[03/07 15:10:42      8s] List of usable inverters: INV_X1 INV_X2 INV_X4 INV_X8 INV_X16 INV_X32
+[03/07 15:10:42      8s] Total number of usable inverters: 6
+[03/07 15:10:42      8s] List of unusable inverters:
+[03/07 15:10:42      8s] Total number of unusable inverters: 0
+[03/07 15:10:42      8s] List of identified usable delay cells:
+[03/07 15:10:42      8s] Total number of identified usable delay cells: 0
+[03/07 15:10:42      8s] List of identified unusable delay cells:
+[03/07 15:10:42      8s] Total number of identified unusable delay cells: 0
+[03/07 15:10:42      8s] No delay cells were detected in the set of buffers. Buffers will be used to fix hold violations.
+[03/07 15:10:42      8s] #- Begin Load floorplan data ... (date=03/07 15:10:42, mem=888.1M)
+[03/07 15:10:42      8s] Reading floorplan file - nn_top_final.enc.dat/nn_top.fp.gz (mem = 888.1M).
+[03/07 15:10:42      8s] *info: reset 212332 existing net BottomPreferredLayer and AvoidDetour
+[03/07 15:10:42      8s] Deleting old partition specification.
+[03/07 15:10:42      8s] Set FPlanBox to (0 0 1582320 1582000)
+[03/07 15:10:42      8s] Generated pitch 1.68 in metal10 is different from 1.6 defined in technology file in preferred direction.
+[03/07 15:10:42      8s] Generated pitch 0.84 in metal8 is different from 0.8 defined in technology file in preferred direction.
+[03/07 15:10:42      8s] Generated pitch 0.84 in metal7 is different from 0.8 defined in technology file in preferred direction.
+[03/07 15:10:42      8s]  ... processed partition successfully.
+[03/07 15:10:42      8s] Reading binary special route file nn_top_final.enc.dat/nn_top.fp.spr.gz (Created by Innovus v16.20-p002_1 on Sat Mar  7 15:05:09 2026, version: 1)
+[03/07 15:10:42      8s] There are 3600 nets with weight being set
+[03/07 15:10:42      8s] There are 4857 nets with bottomPreferredRoutingLayer being set
+[03/07 15:10:42      8s] There are 3600 nets with avoidDetour being set
+[03/07 15:10:42      8s] Extracting standard cell pins and blockage ...... 
+[03/07 15:10:42      8s] Pin and blockage extraction finished
+[03/07 15:10:42      8s] *** End loading floorplan (cpu = 0:00:00.4, mem = 1171.1M) ***
+[03/07 15:10:42      8s] #- End Load floorplan data ... (date=03/07 15:10:42, total cpu=0:00:00.5, real=0:00:00.0, peak res=478.9M, current mem=1171.1M)
+[03/07 15:10:42      8s] #- Begin Load SymbolTable ... (date=03/07 15:10:42, mem=1171.1M)
+[03/07 15:10:42      9s] #- End Load SymbolTable ... (date=03/07 15:10:42, total cpu=0:00:00.3, real=0:00:00.0, peak res=493.1M, current mem=1171.1M)
+[03/07 15:10:42      9s] #- Begin Load placement data ... (date=03/07 15:10:42, mem=1171.1M)
+[03/07 15:10:42      9s] *** Checked 4 GNC rules.
+[03/07 15:10:42      9s] *** applyConnectGlobalNets disabled.
+[03/07 15:10:42      9s] Reading placement file - nn_top_final.enc.dat/nn_top.place.gz.
+[03/07 15:10:42      9s] ** Reading stdCellPlacement_binary (Created by Innovus v16.20-p002_1 on Sat Mar  7 15:05:11 2026, version# 1) ...
+[03/07 15:10:42      9s] *** Completed restorePlace (cpu=0:00:00.2 real=0:00:00.0 mem=1428.1M) ***
+[03/07 15:10:42      9s] Total net length = 3.982e+06 (1.948e+06 2.034e+06) (ext = 3.980e+03)
+[03/07 15:10:42      9s] #- End Load placement data ... (date=03/07 15:10:42, total cpu=0:00:00.2, real=0:00:00.0, peak res=513.2M, current mem=1428.1M)
+[03/07 15:10:42      9s] *** Checked 4 GNC rules.
+[03/07 15:10:42      9s] *** Applying global-net connections...
+[03/07 15:10:43      9s] *** Applied 4 GNC rules (cpu = 0:00:00.0)
+[03/07 15:10:43      9s] #- Begin Load routing data ... (date=03/07 15:10:43, mem=1428.1M)
+[03/07 15:10:43      9s] Reading routing file - nn_top_final.enc.dat/nn_top.route.gz.
+[03/07 15:10:43      9s] Reading Innovus routing data (Created by Innovus v16.20-p002_1 on Sat Mar  7 15:05:11 2026 Format: 16.2) ...
+[03/07 15:10:43      9s] Suppress "**WARN ..." messages.
+[03/07 15:10:43      9s] routingBox: (0 0) (1582320 1582000)
+[03/07 15:10:43      9s] coreBox:    (4180 4200) (1578140 1577800)
+[03/07 15:10:43      9s] Un-suppress "**WARN ..." messages.
+[03/07 15:10:44     11s] *** Total 211445 nets are successfully restored.
+[03/07 15:10:44     11s] *** Completed restoreRoute (cpu=0:00:01.9 real=0:00:01.0 mem=1428.1M) ***
+[03/07 15:10:44     11s] #- End Load routing data ... (date=03/07 15:10:44, total cpu=0:00:02.0, real=0:00:01.0, peak res=899.1M, current mem=1428.1M)
+[03/07 15:10:44     11s] Loading Drc markers ...
+[03/07 15:10:45     12s] ... 198206 markers are loaded ...
+[03/07 15:10:45     12s] ... 77026 geometry drc markers are loaded ...
+[03/07 15:10:45     12s] ... 0 antenna drc markers are loaded ...
+[03/07 15:10:45     12s] Reading property file nn_top_final.enc.dat/nn_top.prop
+[03/07 15:10:45     12s] Extracting macro/IO cell pins and blockage ...... 
+[03/07 15:10:45     12s] Pin and blockage extraction finished
+[03/07 15:10:46     12s] *** Completed restoreProperty (cpu=0:00:00.5 real=0:00:01.0 mem=1428.1M) ***
+[03/07 15:10:46     12s] Set Default Input Pin Transition as 0.1 ps.
+[03/07 15:10:46     12s] **WARN: (GLOBAL-100):	Global 'timing_enable_default_delay_arc' has become obsolete. It will be removed in the next release.
+[03/07 15:10:46     13s] Updating RC grid for preRoute extraction ...
+[03/07 15:10:46     13s] Initializing multi-corner resistance tables ...
+[03/07 15:10:46     13s] **WARN: (IMPCK-8086):	The command specifyClockTree is obsolete and will be removed in a future release. This command still works in this release, but to avoid this warning and to ensure compatibility with future releases, transition to a CCOpt-based flow.
+[03/07 15:10:46     13s] Checking spec file integrity...
+[03/07 15:10:46     13s] 
+[03/07 15:10:46     13s] Reading clock tree spec file 'nn_top_final.enc.dat/nn_top.ctstch' ...
+[03/07 15:10:46     13s] 
+[03/07 15:10:46     13s] RouteType               : FE_CTS_DEFAULT
+[03/07 15:10:46     13s] PreferredExtraSpace     : 1
+[03/07 15:10:46     13s] Shield                  : NONE
+[03/07 15:10:46     13s] PreferLayer             : M3 M4 
+[03/07 15:10:46     13s] RC Information for View an :
+[03/07 15:10:46     13s] Est. Cap                : 0.138272(V=0.142029 H=0.134516) (ff/um) [6.91361e-05]
+[03/07 15:10:46     13s] Est. Res                : 2.53571(V=1.5 H=3.57143)(ohm/um) [0.00126786]
+[03/07 15:10:46     13s] Est. Via Res            : 0.21(ohm) [0.5]
+[03/07 15:10:46     13s] Est. Via Cap            : 0(ff)
+[03/07 15:10:46     13s] M1(H) w=0.07(um) s=0.065(um) p=0.14(um) es=0.21(um) cap=0.132(ff/um) res=5.43(ohm/um) viaRes=0(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M2(V) w=0.07(um) s=0.07(um) p=0.19(um) es=0.31(um) cap=0.115(ff/um) res=3.57(ohm/um) viaRes=0.25(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M3(H) w=0.07(um) s=0.07(um) p=0.14(um) es=0.21(um) cap=0.135(ff/um) res=3.57(ohm/um) viaRes=0.25(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M4(V) w=0.14(um) s=0.14(um) p=0.28(um) es=0.42(um) cap=0.142(ff/um) res=1.5(ohm/um) viaRes=0.21(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M5(H) w=0.14(um) s=0.14(um) p=0.28(um) es=0.42(um) cap=0.142(ff/um) res=1.5(ohm/um) viaRes=0.21(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M6(V) w=0.14(um) s=0.14(um) p=0.28(um) es=0.42(um) cap=0.142(ff/um) res=1.5(ohm/um) viaRes=0.21(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M7(H) w=0.4(um) s=0.4(um) p=0.8(um) es=1.2(um) cap=0.176(ff/um) res=0.188(ohm/um) viaRes=0.075(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M8(V) w=0.4(um) s=0.4(um) p=0.8(um) es=1.2(um) cap=0.176(ff/um) res=0.188(ohm/um) viaRes=0.075(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M9(H) w=0.8(um) s=0.8(um) p=1.6(um) es=2.4(um) cap=0.247(ff/um) res=0.0375(ohm/um) viaRes=0.03(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M10(V) w=0.8(um) s=0.8(um) p=1.6(um) es=2.4(um) cap=0.187(ff/um) res=0.0375(ohm/um) viaRes=0.03(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] 
+[03/07 15:10:46     13s] RouteType               : FE_CTS_DEFAULT_LEAF
+[03/07 15:10:46     13s] PreferredExtraSpace     : 1
+[03/07 15:10:46     13s] Shield                  : NONE
+[03/07 15:10:46     13s] PreferLayer             : M3 M4 
+[03/07 15:10:46     13s] RC Information for View an :
+[03/07 15:10:46     13s] Est. Cap                : 0.138272(V=0.142029 H=0.134516) (ff/um) [6.91361e-05]
+[03/07 15:10:46     13s] Est. Res                : 2.53571(V=1.5 H=3.57143)(ohm/um) [0.00126786]
+[03/07 15:10:46     13s] Est. Via Res            : 0.21(ohm) [0.5]
+[03/07 15:10:46     13s] Est. Via Cap            : 0(ff)
+[03/07 15:10:46     13s] M1(H) w=0.07(um) s=0.065(um) p=0.14(um) es=0.21(um) cap=0.132(ff/um) res=5.43(ohm/um) viaRes=0(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M2(V) w=0.07(um) s=0.07(um) p=0.19(um) es=0.31(um) cap=0.115(ff/um) res=3.57(ohm/um) viaRes=0.25(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M3(H) w=0.07(um) s=0.07(um) p=0.14(um) es=0.21(um) cap=0.135(ff/um) res=3.57(ohm/um) viaRes=0.25(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M4(V) w=0.14(um) s=0.14(um) p=0.28(um) es=0.42(um) cap=0.142(ff/um) res=1.5(ohm/um) viaRes=0.21(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M5(H) w=0.14(um) s=0.14(um) p=0.28(um) es=0.42(um) cap=0.142(ff/um) res=1.5(ohm/um) viaRes=0.21(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M6(V) w=0.14(um) s=0.14(um) p=0.28(um) es=0.42(um) cap=0.142(ff/um) res=1.5(ohm/um) viaRes=0.21(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M7(H) w=0.4(um) s=0.4(um) p=0.8(um) es=1.2(um) cap=0.176(ff/um) res=0.188(ohm/um) viaRes=0.075(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M8(V) w=0.4(um) s=0.4(um) p=0.8(um) es=1.2(um) cap=0.176(ff/um) res=0.188(ohm/um) viaRes=0.075(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M9(H) w=0.8(um) s=0.8(um) p=1.6(um) es=2.4(um) cap=0.247(ff/um) res=0.0375(ohm/um) viaRes=0.03(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] M10(V) w=0.8(um) s=0.8(um) p=1.6(um) es=2.4(um) cap=0.187(ff/um) res=0.0375(ohm/um) viaRes=0.03(ohm) viaCap=0(ff)
+[03/07 15:10:46     13s] 
+[03/07 15:10:46     13s] Switching off Advanced RC Correlation modes in AAE mode.
+[03/07 15:10:46     13s] Active Analysis Views for CTS are,
+[03/07 15:10:46     13s] #1 an
+[03/07 15:10:46     13s] Default Analysis Views is an
+[03/07 15:10:46     13s] 
+[03/07 15:10:46     13s] 
+[03/07 15:10:46     13s] ****** AutoClockRootPin ******
+[03/07 15:10:46     13s] AutoClockRootPin 1: clk
+[03/07 15:10:46     13s] # NoGating         NO
+[03/07 15:10:46     13s] # SetDPinAsSync    NO
+[03/07 15:10:46     13s] # SetIoPinAsSync   NO
+[03/07 15:10:46     13s] # SetAsyncSRPinAsSync   NO
+[03/07 15:10:46     13s] # SetTriStEnPinAsSync   NO
+[03/07 15:10:46     13s] # SetBBoxPinAsSync   NO
+[03/07 15:10:46     13s] # RouteClkNet      YES
+[03/07 15:10:46     13s] # PostOpt          YES
+[03/07 15:10:46     13s] # RouteType        FE_CTS_DEFAULT
+[03/07 15:10:46     13s] # LeafRouteType    FE_CTS_DEFAULT_LEAF
+[03/07 15:10:46     13s] 
+[03/07 15:10:46     13s] ***** !! NOTE !! *****
+[03/07 15:10:46     13s] 
+[03/07 15:10:46     13s] CTS treats D-pins and I/O pins as non-synchronous pins by default.
+[03/07 15:10:46     13s] If you want to change the behavior, you need to use the SetDPinAsSync
+[03/07 15:10:46     13s] or SetIoPinAsSync statement in the clock tree specification file,
+[03/07 15:10:46     13s] or use the setCTSMode -traceDPinAsLeaf {true|false} command,
+[03/07 15:10:46     13s] or use the setCTSMode -traceIoPinAsLeaf {true|false} command
+[03/07 15:10:46     13s] before specifyClockTree command.
+[03/07 15:10:46     13s] 
+[03/07 15:10:46     13s] *** End specifyClockTree (cpu=0:00:00.0, real=0:00:00.0, mem=1428.1M) ***
+[03/07 15:10:46     13s] #- Begin Load power constraints ... (date=03/07 15:10:46, mem=1428.1M)
+[03/07 15:10:46     13s] #- End Load power constraints ... (date=03/07 15:10:46, total cpu=0:00:00.0, real=0:00:00.0, peak res=966.8M, current mem=1428.1M)
+[03/07 15:10:46     13s] #- Begin load AAE data ... (date=03/07 15:10:46, mem=1428.1M)
+[03/07 15:10:46     13s] #- End load AAE data ... (date=03/07 15:10:46, total cpu=0:00:00.0, real=0:00:00.0, peak res=966.8M, current mem=1428.1M)
+[03/07 15:10:46     13s] Restoring CCOpt config...
+[03/07 15:10:46     13s] Summary for sequential cells identification: 
+[03/07 15:10:46     13s] Identified SBFF number: 16
+[03/07 15:10:46     13s] Identified MBFF number: 0
+[03/07 15:10:46     13s] Identified SB Latch number: 0
+[03/07 15:10:46     13s] Identified MB Latch number: 0
+[03/07 15:10:46     13s] Not identified SBFF number: 0
+[03/07 15:10:46     13s] Not identified MBFF number: 0
+[03/07 15:10:46     13s] Not identified SB Latch number: 0
+[03/07 15:10:46     13s] Not identified MB Latch number: 0
+[03/07 15:10:46     13s] Number of sequential cells which are not FFs: 13
+[03/07 15:10:46     13s] 
+[03/07 15:10:46     13s]   Extracting original clock gating for clk...
+[03/07 15:10:47     13s]     clock_tree clk contains 38989 sinks and 0 clock gates.
+[03/07 15:10:47     13s]     Extraction for clk complete.
+[03/07 15:10:47     13s]   Extracting original clock gating for clk done.
+[03/07 15:10:47     13s] Restoring CCOpt config done.
+[03/07 15:10:47     13s] Summary for sequential cells identification: 
+[03/07 15:10:47     13s] Identified SBFF number: 16
+[03/07 15:10:47     13s] Identified MBFF number: 0
+[03/07 15:10:47     13s] Identified SB Latch number: 0
+[03/07 15:10:47     13s] Identified MB Latch number: 0
+[03/07 15:10:47     13s] Not identified SBFF number: 0
+[03/07 15:10:47     13s] Not identified MBFF number: 0
+[03/07 15:10:47     13s] Not identified SB Latch number: 0
+[03/07 15:10:47     13s] Not identified MB Latch number: 0
+[03/07 15:10:47     13s] Number of sequential cells which are not FFs: 13
+[03/07 15:10:47     13s] 
+[03/07 15:10:47     13s] Total number of combinational cells: 99
+[03/07 15:10:47     13s] Total number of sequential cells: 29
+[03/07 15:10:47     13s] Total number of tristate cells: 6
+[03/07 15:10:47     13s] Total number of level shifter cells: 0
+[03/07 15:10:47     13s] Total number of power gating cells: 0
+[03/07 15:10:47     13s] Total number of isolation cells: 0
+[03/07 15:10:47     13s] Total number of power switch cells: 0
+[03/07 15:10:47     13s] Total number of pulse generator cells: 0
+[03/07 15:10:47     13s] Total number of always on buffers: 0
+[03/07 15:10:47     13s] Total number of retention cells: 0
+[03/07 15:10:47     13s] List of usable buffers: BUF_X1 BUF_X2 BUF_X4 BUF_X8 BUF_X16 BUF_X32 CLKBUF_X1 CLKBUF_X2 CLKBUF_X3
+[03/07 15:10:47     13s] Total number of usable buffers: 9
+[03/07 15:10:47     13s] List of unusable buffers:
+[03/07 15:10:47     13s] Total number of unusable buffers: 0
+[03/07 15:10:47     13s] List of usable inverters: INV_X1 INV_X2 INV_X4 INV_X8 INV_X16 INV_X32
+[03/07 15:10:47     13s] Total number of usable inverters: 6
+[03/07 15:10:47     13s] List of unusable inverters:
+[03/07 15:10:47     13s] Total number of unusable inverters: 0
+[03/07 15:10:47     13s] List of identified usable delay cells:
+[03/07 15:10:47     13s] Total number of identified usable delay cells: 0
+[03/07 15:10:47     13s] List of identified unusable delay cells:
+[03/07 15:10:47     13s] Total number of identified unusable delay cells: 0
+[03/07 15:10:47     13s] No delay cells were detected in the set of buffers. Buffers will be used to fix hold violations.
+[03/07 15:10:47     13s] 
+[03/07 15:10:47     13s] *** Summary of all messages that are not suppressed in this session:
+[03/07 15:10:47     13s] Severity  ID               Count  Summary                                  
+[03/07 15:10:47     13s] WARNING   IMPEXT-2766         10  The sheet resistance for layer %s is not...
+[03/07 15:10:47     13s] WARNING   IMPEXT-2773         10  The via resistance between layers %s and...
+[03/07 15:10:47     13s] WARNING   IMPCK-8086           1  The command %s is obsolete and will be r...
+[03/07 15:10:47     13s] *** Message Summary: 21 warning(s), 0 error(s)
+[03/07 15:10:47     13s] 
+[03/07 15:10:56     14s] <CMD> selectWire 139.3150 448.4200 147.2950 448.5600 5 FE_OFN4484_n_384287
+[03/07 15:10:57     14s] <CMD> deselectAll
+[03/07 15:10:57     14s] <CMD> selectWire 140.0900 2.0000 141.0900 789.0000 4 VDD
+[03/07 15:23:51     46s] <CMD> fit
+[03/07 15:32:03     61s] <CMD> report_power
+[03/07 15:32:03     61s] 
+[03/07 15:32:03     61s] Power Net Detected:
+[03/07 15:32:03     61s]     Voltage	    Name
+[03/07 15:32:03     61s]     0.00V	    VSS
+[03/07 15:32:03     61s]     1.10V	    VDD
+[03/07 15:32:03     61s] #################################################################################
+[03/07 15:32:03     61s] # Design Stage: PostRoute
+[03/07 15:32:03     61s] # Design Name: nn_top
+[03/07 15:32:03     61s] # Design Mode: 45nm
+[03/07 15:32:03     61s] # Analysis Mode: MMMC Non-OCV 
+[03/07 15:32:03     61s] # Parasitics Mode: No SPEF/RCDB
+[03/07 15:32:03     61s] # Signoff Settings: SI Off 
+[03/07 15:32:03     61s] #################################################################################
+[03/07 15:32:03     61s] Extraction called for design 'nn_top' of instances=167166 and nets=212332 using extraction engine 'preRoute' .
+[03/07 15:32:03     61s] PreRoute RC Extraction called for design nn_top.
+[03/07 15:32:03     61s] RC Extraction called in multi-corner(1) mode.
+[03/07 15:32:03     61s] **WARN: (IMPEXT-6197):	The Cap table file is not specified. This will result in lower parasitic accuracy when using preRoute extraction or postRoute extraction with effort level 'low'. It is recommended to generate the Cap table file using the 'generateCapTbl' command and specify it before extraction using 'create_rc_corner/update_rc_corner -cap_table'.
+[03/07 15:32:03     61s] Type 'man IMPEXT-6197' for more detail.
+[03/07 15:32:03     61s] RCMode: PreRoute
+[03/07 15:32:03     61s]       RC Corner Indexes            0   
+[03/07 15:32:03     61s] Capacitance Scaling Factor   : 1.00000 
+[03/07 15:32:03     61s] Resistance Scaling Factor    : 1.00000 
+[03/07 15:32:03     61s] Clock Cap. Scaling Factor    : 1.00000 
+[03/07 15:32:03     61s] Clock Res. Scaling Factor    : 1.00000 
+[03/07 15:32:03     61s] Shrink Factor                : 1.00000
+[03/07 15:32:03     61s] PreRoute extraction is honoring NDR/Shielding/ExtraSpace for clock nets.
+[03/07 15:32:04     62s] Updating RC grid for preRoute extraction ...
+[03/07 15:32:04     62s] Initializing multi-corner resistance tables ...
+[03/07 15:32:04     62s] PreRoute RC Extraction DONE (CPU Time: 0:00:01.3  Real Time: 0:00:01.0  MEM: 1794.605M)
+[03/07 15:32:08     66s] Calculate delays in Single mode...
+[03/07 15:32:08     66s] Topological Sorting (REAL = 0:00:00.0, MEM = 1919.4M, InitMEM = 1898.6M)
+[03/07 15:32:08     66s] AAE DB initialization (MEM=1967.05 CPU=0:00:00.0 REAL=0:00:00.0) 
+[03/07 15:32:08     66s] siFlow : Timing analysis mode is single, using late cdB files
+[03/07 15:32:08     66s] Start AAE Lib Loading. (MEM=1967.05)
+[03/07 15:32:08     66s] End AAE Lib Loading. (MEM=2175.33 CPU=0:00:00.0 Real=0:00:00.0)
+[03/07 15:32:09     67s] End AAE Lib Interpolated Model. (MEM=2175.33 CPU Time=0:00:00.0, Real Time=0:00:00.0)
+[03/07 15:32:09     67s] **WARN: (IMPEXT-2882):	Unable to find the resistance for via 'via5_0' in Cap table or LEF or OA files. The default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, provide the resistance and read the files again.
+[03/07 15:32:09     67s] **WARN: (IMPEXT-2882):	Unable to find the resistance for via 'via3_2' in Cap table or LEF or OA files. The default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, provide the resistance and read the files again.
+[03/07 15:32:09     67s] **WARN: (IMPEXT-2882):	Unable to find the resistance for via 'via4_0' in Cap table or LEF or OA files. The default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, provide the resistance and read the files again.
+[03/07 15:32:09     67s] **WARN: (IMPEXT-2882):	Unable to find the resistance for via 'via2_5' in Cap table or LEF or OA files. The default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, provide the resistance and read the files again.
+[03/07 15:32:09     67s] **WARN: (IMPEXT-2882):	Unable to find the resistance for via 'via1_7' in Cap table or LEF or OA files. The default value of 4.0 ohms is being assigned. To avoid this, check the Cap table and LEF and OA files, provide the resistance and read the files again.
+[03/07 15:32:31     89s] Total number of fetched objects 211443
+[03/07 15:32:31     89s] End Timing Check Calculation. (CPU Time=0:00:00.5, Real Time=0:00:00.0)
+[03/07 15:32:31     89s] End delay calculation. (MEM=2390.65 CPU=0:00:22.4 REAL=0:00:22.0)
+[03/07 15:32:31     89s] *** CDM Built up (cpu=0:00:28.1  real=0:00:28.0  mem= 2390.7M) ***
+[03/07 15:32:33     91s] 
+[03/07 15:32:33     91s] Begin Power Analysis
+[03/07 15:32:33     91s] 
+[03/07 15:32:33     91s]     0.00V	    VSS
+[03/07 15:32:33     91s]     1.10V	    VDD
+[03/07 15:32:33     91s] Begin Processing Timing Library for Power Calculation
+[03/07 15:32:33     91s] 
+[03/07 15:32:33     91s] Begin Processing Timing Library for Power Calculation
+[03/07 15:32:33     91s] 
+[03/07 15:32:33     91s] 
+[03/07 15:32:33     91s] 
+[03/07 15:32:33     91s] Begin Processing Power Net/Grid for Power Calculation
+[03/07 15:32:33     91s] 
+[03/07 15:32:33     91s] Ended Processing Power Net/Grid for Power Calculation: (cpu=0:00:00, real=0:00:00, mem(process/total)=1915.16MB/1915.16MB)
+[03/07 15:32:33     91s] 
+[03/07 15:32:33     91s] Begin Processing Timing Window Data for Power Calculation
+[03/07 15:32:33     91s] 
+[03/07 15:32:33     91s] clk(100MHz) Ended Processing Timing Window Data for Power Calculation: (cpu=0:00:01, real=0:00:01, mem(process/total)=1972.85MB/1972.85MB)
+[03/07 15:32:35     93s] 
+[03/07 15:32:35     93s] Begin Processing User Attributes
+[03/07 15:32:35     93s] 
+[03/07 15:32:35     93s] Ended Processing User Attributes: (cpu=0:00:00, real=0:00:00, mem(process/total)=1972.85MB/1972.85MB)
+[03/07 15:32:35     93s] 
+[03/07 15:32:35     93s] Begin Processing Signal Activity
+[03/07 15:32:35     93s] 
+[03/07 15:32:40     98s] Ended Processing Signal Activity: (cpu=0:00:04, real=0:00:05, mem(process/total)=2002.48MB/2002.48MB)
+[03/07 15:32:40     98s] 
+[03/07 15:32:40     98s] Begin Power Computation
+[03/07 15:32:40     98s] 
+[03/07 15:32:40     98s]       ----------------------------------------------------------
+[03/07 15:32:40     98s]       # of cell(s) missing both power/leakage table: 0
+[03/07 15:32:40     98s]       # of cell(s) missing power table: 0
+[03/07 15:32:40     98s]       # of cell(s) missing leakage table: 0
+[03/07 15:32:40     98s]       # of MSMV cell(s) missing power_level: 0
+[03/07 15:32:40     98s]       ----------------------------------------------------------
+[03/07 15:32:40     98s] 
+[03/07 15:32:40     98s] 
+[03/07 15:33:06    124s] Ended Power Computation: (cpu=0:00:25, real=0:00:25, mem(process/total)=2003.17MB/2003.17MB)
+[03/07 15:33:06    124s] 
+[03/07 15:33:06    124s] Begin Processing User Attributes
+[03/07 15:33:06    124s] 
+[03/07 15:33:06    124s] Ended Processing User Attributes: (cpu=0:00:00, real=0:00:00, mem(process/total)=2003.17MB/2003.17MB)
+[03/07 15:33:06    124s] 
+[03/07 15:33:06    124s] Ended Power Analysis: (cpu=0:00:32, real=0:00:32, mem(process/total)=2003.17MB/2003.17MB)
+[03/07 15:33:06    124s] 
+[03/07 15:36:30    132s] <CMD> deselectAll
+[03/07 15:36:32    132s] <CMD> getCTSMode -engine -quiet
+[03/07 15:36:43    133s] <CMD> setLayerPreference violation -isVisible 1
+[03/07 15:36:43    133s] <CMD> violationBrowser -all -no_display_false
+[03/07 15:36:46    135s] <CMD> zoomBox 493.575 668.84 494.715 669.98
+[03/07 15:36:46    135s] <CMD> zoomBox 493.575 668.84 494.715 669.98
+[03/07 15:36:46    135s] <CMD> zoomBox 493.575 668.84 494.715 669.98
+[03/07 15:36:46    135s] <CMD> ::Rda_Browser::VB::violationBrowserSetObjs

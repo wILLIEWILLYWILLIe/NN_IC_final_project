@@ -1,0 +1,62 @@
+# PPCMD 1 
+# sroute -connect { blockPin padPin padRing corePin floatingStripe } -layerChangeRange { 1 10 } -blockPinTarget { nearestRingStripe nearestTarget } -padPinPortConnect { allPort oneGeom } -checkAlignedSecondaryPin 1 -blockPin useLef -allowJogging 1 -crossoverViaBottomLayer 1 -allowLayerChange 1 -targetViaTopLayer 10 -crossoverViaTopLayer 10 -targetViaBottomLayer 1 -nets { VDD VSS }
+# 3 
+# 16 
+# 0 
+# 0 
+# 0 
+# 0 
+# BOX_LIST 
+# END_BOX_LIST 
+# NET_INFO_LIST 
+# END_NET_INFO_LIST 
+# END_PPCMD 1 
+
+# PPCMD 2 
+# addStripe -block_ring_top_layer_limit metal5 -max_same_layer_jog_length 1.6 -padcore_ring_bottom_layer_limit metal3 -set_to_set_distance 5 -stacked_via_top_layer metal10 -padcore_ring_top_layer_limit metal5 -spacing 1 -xleft_offset 1 -merge_stripes_value 0.095 -layer metal4 -block_ring_bottom_layer_limit metal3 -width 1 -nets {VSS VDD } -stacked_via_bottom_layer metal1
+# 2 
+# 2 
+# 1 
+# 0 
+# 0 
+# 2 
+# BOX_LIST 
+# 0 0 1580320 1580000 0 
+# 4000 4000 1576320 1576000 0 
+# END_BOX_LIST 
+# NET_INFO_LIST 
+# VDD 2000 4 0 10180 1578140 10000 0 0 
+# VSS 2000 4 0 6180 1578140 10000 0 0 
+# END_NET_INFO_LIST 
+# END_PPCMD 2 
+
+# PPCMD 3 
+# addRing -nets {VSS VDD} -type core_rings -follow io -layer {top metal5 bottom metal5 left metal4 right metal4} -width {top 1 bottom 1 left 1 right 1} -spacing {top 1 bottom 1 left 1 right 1} -offset {top 0 bottom 0 left 0 right 0} -center 0
+# 1 
+# 32 
+# 1 
+# 0 
+# 0 
+# 0 
+# BOX_LIST 
+# END_BOX_LIST 
+# NET_INFO_LIST 
+# VDD 2000 5 1 0 0 0 0 0 
+# RING_PT_INFO_LIST 
+# 791160 5000 791160 1577000 
+# END_RING_PT_INFO_LIST 
+# VDD 2000 4 1 0 0 0 0 0 
+# RING_PT_INFO_LIST 
+# 5000 791000 1577320 791000 
+# END_RING_PT_INFO_LIST 
+# VSS 2000 5 1 0 0 0 0 0 
+# RING_PT_INFO_LIST 
+# 791160 1000 791160 1581000 
+# END_RING_PT_INFO_LIST 
+# VSS 2000 4 1 0 0 0 0 0 
+# RING_PT_INFO_LIST 
+# 1000 791000 1581320 791000 
+# END_RING_PT_INFO_LIST 
+# END_NET_INFO_LIST 
+# END_PPCMD 3 
+

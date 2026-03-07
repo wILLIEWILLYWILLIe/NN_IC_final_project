@@ -1,0 +1,27 @@
+
+                               Synplify Pro (R) 
+
+                Version O-2018.09-SP1 for RHEL64 - Nov 27, 2018 
+
+                    Copyright (c) 1988 - 2018 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+            or distribution of this software is strictly prohibited.
+
+Starting:    /vol/synopsys/fpga/O-2018.09-SP1/linux_a_64/mbin/synplify
+Install:     /vol/synopsys/fpga/O-2018.09-SP1
+Hostname:    finagle.wot.ece.northwestern.edu
+Date:        Fri Mar  6 11:53:43 2026
+Version:     O-2018.09-SP1
+
+Arguments:   -product synplify_pro
+ProductType: synplify_pro
+
+
+Host ID:  "cc483a1abc0d 00620b248cb1 00620b248cb0 cc483a1abc11 cc483a1abc10"
+Please contact support at https://solvnet.synopsys.com/ManageCase?ccf=1
+
+
+
+

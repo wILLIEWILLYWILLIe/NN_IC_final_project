@@ -40,12 +40,30 @@ UVM_SRC  := $(PKG) \
             $(UVM_PKG) \
             $(UVM_DIR)/my_uvm_tb.sv
 
+# Gate Level Simulation (GLS) Source files
+GENUS_DIR := ../../backend/genus
+LIB_V     := /vol/ece303/genus_tutorial/NangateOpenCellLibrary.v
+
+GLS_SRC  := $(PKG) \
+            $(W_PKG) \
+            $(GENUS_DIR)/nn_top_syn.v \
+            $(LIB_V) \
+            $(SV_DIR)/nn_tb.sv
+
 # -------------------------------------------------------
-.PHONY: sim sim_gui uvm_sim uvm_sim_gui clean test_all
+.PHONY: sim sim_gui uvm_sim uvm_sim_gui clean test_all gls gls_gui
 
 # Run direct testbench
 sim:
 	xrun $(XFLAGS) $(ALL_SRC)
+
+# Gate Level Simulation
+gls:
+	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 -delay_mode zero $(GLS_SRC)"
+
+# Gate Level Simulation with GUI
+gls_gui:
+	xrun $(XFLAGS) -gui -warnmax 0 -delay_mode zero $(GLS_SRC)
 
 # Run with GUI for waveforms
 sim_gui:
