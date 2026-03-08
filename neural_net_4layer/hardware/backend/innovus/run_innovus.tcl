@@ -15,8 +15,8 @@ set init_gnd_net "VSS"
 init_design
 
 # 2. Floorplan
-# Aspect Ratio 1.0, 63% density, 2um margins
-floorPlan -r 1.0 0.63 2 2 2 2
+# Aspect Ratio 1.0, 50% density, 5um margins (Increased margins and lower density to fix routing congestion DRCs)
+floorPlan -r 1.0 0.5 5 5 5 5
 fit
 
 # 3. Global Net Connections

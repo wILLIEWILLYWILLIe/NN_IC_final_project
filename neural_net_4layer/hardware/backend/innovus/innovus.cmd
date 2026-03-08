@@ -1,7 +1,7 @@
 #######################################################
 #                                                     
 #  Innovus Command Logging File                     
-#  Created on Sat Mar  7 13:29:46 2026                
+#  Created on Sat Mar  7 15:54:28 2026                
 #                                                     
 #######################################################
 
@@ -17,6 +17,7 @@ set_global _enable_mmmc_by_default_flow      $CTE::mmmc_default
 suppressMessage ENCEXT-2799
 getDrawView
 loadWorkspace -name Physical
+win
 setDesignMode -process 45
 set init_verilog nn_top_syn_pg.v
 set init_top_cell nn_top
@@ -25,7 +26,15 @@ set init_mmmc_file nn_top.view
 set init_pwr_net VDD
 set init_gnd_net VSS
 init_design
-floorPlan -r 1.0 0.63 2 2 2 2
+setDesignMode -process 45
+set init_verilog nn_top_syn_pg.v
+set init_top_cell nn_top
+set init_lef_file /vol/ece303/genus_tutorial/NangateOpenCellLibrary.lef
+set init_mmmc_file nn_top.view
+set init_pwr_net VDD
+set init_gnd_net VSS
+init_design
+floorPlan -r 1.0 0.5 5 5 5 5
 fit
 globalNetConnect VDD -type pgpin -pin VDD -inst *
 globalNetConnect VSS -type pgpin -pin VSS -inst *
@@ -41,7 +50,7 @@ placeDesign
 clockDesign -specFile Clock.ctstch -outDir clock_report
 optDesign -postCTS
 optDesign -postCTS -hold
-setNanoRouteMode -quiet -routeTopRoutingLayer 6
+setNanoRouteMode -quiet -routeTopRoutingLayer 9
 routeDesign -globalDetail
 verify_drc -report nn_top.drc.rpt
 verifyConnectivity -type all -report nn_top.conn.rpt
@@ -49,3 +58,7 @@ verifyProcessAntenna -reportfile nn_top.antenna.rpt
 saveDesign nn_top_final.enc
 saveNetlist nn_top_final_nophy.v
 write_sdf nn_top_final.sdf
+getCTSMode -engine -quiet
+report_power
+report_timing
+report_area

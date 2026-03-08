@@ -16,7 +16,7 @@ catch { setCTSMode -moveGateLimit 25 }
 catch {setNanoRouteMode -quiet -drouteUseMinSpacingForBlockage auto}
 catch {setNanoRouteMode -quiet -grouteExpTdStdDelay 7.800000}
 catch {setNanoRouteMode -quiet -routeStrictlyHonorNonDefaultRule "false"}
-catch {setNanoRouteMode -quiet -routeTopRoutingLayer 6}
+catch {setNanoRouteMode -quiet -routeTopRoutingLayer 9}
 
 catch { setPlaceMode -place_global_clock_gate_aware true }
 catch { setPlaceMode -timingDriven true }

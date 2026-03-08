@@ -16,6 +16,7 @@ python_train/data/
 # neural_net_4layer/test_samples/*.txt
 
 # HW Simulation Artifacts
+neural_net_4layer/hardware/frontend/sim/xcelium.d/*
 **/xcelium.d/*
 **/INCA_libs/*
 **/xrun.log
@@ -33,6 +34,7 @@ python_train/data/
 
 # Ignore tool logs and reports
 *.log
+*.log*
 *.logv*
 *.cmd
 *.cmd*

@@ -1,4 +1,4 @@
-set_clock_latency -source -early -max -rise  -0.431916 [get_ports {clk}] -clock clk 
-set_clock_latency -source -early -max -fall  -0.454401 [get_ports {clk}] -clock clk 
-set_clock_latency -source -late -max -rise  -0.431916 [get_ports {clk}] -clock clk 
-set_clock_latency -source -late -max -fall  -0.454401 [get_ports {clk}] -clock clk 
+set_clock_latency -source -early -max -rise  -0.409395 [get_ports {clk}] -clock clk 
+set_clock_latency -source -early -max -fall  -0.42998 [get_ports {clk}] -clock clk 
+set_clock_latency -source -late -max -rise  -0.409395 [get_ports {clk}] -clock clk 
+set_clock_latency -source -late -max -fall  -0.42998 [get_ports {clk}] -clock clk 

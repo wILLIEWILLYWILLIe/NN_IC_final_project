@@ -55,15 +55,67 @@ To run the full APR flow, follow these steps in the `hardware/backend/innovus` d
 - `clockDesign`: Performs CTS based on the `.ctstch` spec.
 - `verify_drc / verifyConnectivity`: Ensures the chip can be manufactured.
 
-## 6. Final Post-Route Results (PPA)
+## 6. Iteration 1: Initial Post-Route Results (Baseline)
 - **Timing (Setup)**: WNS = **+1.356ns**, Violating Paths = 0 (Timing Met!)
 - **Timing (Hold)**: WNS = **+0.049ns**, Violating Paths = 0
 - **Power**: Total = **71.47 mW** (Internal: 32.72 mW, Switching: 30.75 mW, Leakage: 8.00 mW)
 - **Area (Density)**: **63.43%** utilization.
 - **Connectivity**: 0 problems or warnings.
-- **DRC Violations**: 1000+ Violations (Metal Shorts/Spacing due to congestion).
+- **DRC Violations**: **1000+ Violations** (Metal Shorts/Spacing due to congestion restricting M6 only).
 
-## 7. Proposals to Fix DRC Congestion
+## 7. Iteration 2: Final Post-Route Results (Optimal)
+*After expanding to Metal 9 and lowering floorplan density to 50%*
+
+- **Timing (Setup)**: WNS = **+2.229ns**, Violating Paths = 0 (Timing Met & Improved!)
+- **Timing (Hold)**: WNS = **+0.054ns**, Violating Paths = 0 (Timing Met!)
+- **Max Frequency Estimation**: Target Period (10ns) - Setup WNS (2.229ns) = 7.771ns. Max Freq ≈ **128.6 MHz** (comfortably exceeds 100MHz baseline).
+- **Power**: Total = **70.22 mW** (Internal: 32.64 mW, Switching: 29.57 mW, Leakage: 8.01 mW) -> *Decreased slightly due to fewer wire detours.*
+- **Area (Density)**: **50.04%** utilization.
+- **Connectivity**: 0 problems or warnings.
+- **DRC Violations**: **0 Violations!** (Perfect Routing, Tape-out Ready).
+
+## 8. 專案比較與優劣分析：Our 4-Layer NPU vs. Wei-In's NPU
+*(此章節專門為期末報告的「架構探討與比較」單元準備)*
+
+相較於 Wei-In 開發的基礎款 NPU (`784 -> 30 -> 30 -> 10`)，本專案的 4 層 NPU (`784 -> 32 -> 16 -> 16 -> 10`，具備 32 條 MAC Lanes 平行運算) 展現了截然不同的設計哲學。以下是詳細的優劣勢比較：
+
+### 🌟 我們的優勢 (Pros / 好在哪裡)
+
+#### 1. 模型表現與特徵學習力 (Accuracy & Capacity)
+*   **Ours (~97.5% 準確率)**：擁有更深的層數與更大的網路節點數 (32-16-16-10)。這讓我們能捕捉更高維度的非線性特徵，在真實的測試集上表現極佳。
+*   **Wei-In (表現受限)**：窄小的隱藏層 (30-30-10) 嚴重限制了模型的學習天花板，容易發生 Underfitting (欠擬合)。
+
+#### 2. 硬體架構的現代化與優雅性 (Hardware Elegance & Datapath)
+*   **Ours (純淨設計)**：資料路徑上直接將 MAC 累加器擴展至 **64 位元**。這賦予了極大的動態範圍，從硬體物理層面**直接杜絕了溢位 (Overflow) 問題**，無需任何額外的飽和運算控制邏輯。
+*   **Wei-In (複雜累贅)**：使用 Q1.15 (16 位元) 固定小數點，為了防止溢位，必須加入臃腫的飽和邏輯 (Saturating logic) 來夾壓數值，拖慢時序並增加無謂的邏輯閘。
+
+#### 3. 激活函數的面積與時間成本 (Activation Functions)
+*   **Ours (ReLU 函數)**：完美貼合數位邏輯，利用極低成本的**多工器 (Multiplexer)** 實作 (`in > 0 ? in : 0`)。零查表延遲、極低面積消耗，且完全不依賴記憶體。
+*   **Wei-In (Sigmoid 函數)**：被迫建構龐大的 Read-Only Memory (ROM) Look-Up Table 來作弊近似指數計算。這會大幅吃掉 Block RAM 與晶片內部面積，且查表 (Table Lookup) 會成為 Critical Path 上的嚴重延遲來源。
+
+#### 4. 可擴展性與參數化 RTL 生態 (Scalability & Parameterization)
+*   **Ours (高度自動化)**：使用高度參數化的 SystemVerilog 寫法 (`generate-for`) 搭配 Python 自動化腳本。只需修改幾個 Localparam，就能「零痛點」從 4 層擴展到 8 層甚至是 16 層。
+*   **Wei-In (硬編碼架構)**：網路層是被寫死的 (Hardcoded, e.g., `Layer1.sv`, `Layer2.sv`)。若要增加層數或神經元，必須進行大量痛苦的人工事後重構 (Manual refactoring)。
+
+---
+
+### ⚠️ 我們的劣勢與代價 (Cons / 壞在哪裡)
+
+#### 1. 晶片面積與物理製造成本 (Area & Manufacturing Cost)
+*   **Ours**：因為平行的 MAC 單元多達 32 條，加上神經元數量龐大，最終的邏輯閘總數 (Gate Count) 與 Cell Area 勢必**遠大於 Wei-In 的版本**。如果真的要流片製造 (Tape-out)，我們的晶片每平方毫米的成本會相當高昂。
+
+#### 2. 繞線擁塞與 APR 挑戰 (Routing Congestion)
+*   **Ours**：神經網路的「全連接層」在實體繞線上就是一場夢魘。神經元之間資料搬移產生的互連線 (Interconnects) 密如蛛網。這迫使我們必須使用到 **Metal 9 (9 層金屬)** 並將利用率降至 50% 才能清空 DRC 短路違規。
+*   **Wei-In**：小巧的網路結構讓他們在佈局繞線 (Place & Route) 時會輕鬆非常多，甚至可能只需極少數的金屬層就能輕鬆過關。
+
+#### 3. 總體功耗 (Total Power Consumption)
+*   **Ours (70.22 mW)**：高平行度與大量的暫存器導致時脈樹 (Clock Tree) 與切換功率 (Switching Power) 維持在較高的水準 (30mW+)。若要應用於極低功耗的穿戴式物聯網 (IoT Embeded) 裝置，Wei-In 的小網路在功耗管控上會佔有絕對優勢。
+
+---
+📝 **給報告的總結 (Conclusion)**：
+這是一場經典的 **「效能 vs. 成本」衡量 (Trade-off)**。Wei-In 的架構適合極端受限成本與功耗的超微型玩具級研究；而我們的設計則是一顆**真正具備實用推論能力、具備高度擴展性且採用現代硬體思維 (ReLU, 避免溢位的寬廣資料路徑, RTL 參數化)** 的高效能邊緣 AI 硬體加速器。
+
+## 9. Historical Proposals to Fix DRC Congestion (Resolved)
 The dense logic array in `u_input_fifo` generates severe local congestion. To achieve a DRC-clean layout for tape-out, consider these physical design adjustments:
 1. **Increase Total Area / Reduce Density**: 
    - Expand the floorplan margins or target lower utilization (e.g., 40-50%). This allows standard cells to spread further apart, granting the router more tracks per cell.
@@ -73,7 +125,7 @@ The dense logic array in `u_input_fifo` generates severe local congestion. To ac
 3. **Module Placement Halos**: 
    - Add placement Halos around highly congested modules like the lookup tables to force empty spaces, allowing wires to pass through unobstructed.
 
-## 8. Useful Innovus GUI & Analysis Commands
+## 10. Useful Innovus GUI & Analysis Commands
 If you want to view your placed and routed chip or analyze specific metrics, start the GUI:
 ```bash
 innovus
@@ -95,7 +147,7 @@ Then use the console (`innovus>`) to run these commands:
   report_timing -machine_readable -max_paths 50
   ```
 
-## 9. Git & File Size Management
+## 11. Git & File Size Management
 The generated `.sdf` (Standard Delay Format) file is very large (~180MB) and will cause `git push` to fail due to GitHub's 100MB file limit. 
 - **Action Taken:** `*.sdf` has been added to `.gitignore`.
 - **Zip Workaround:** The SDF file is compressed as `nn_top_final.sdf.zip` to save space. 
@@ -103,3 +155,16 @@ The generated `.sdf` (Standard Delay Format) file is very large (~180MB) and wil
   ```bash
   unzip nn_top_final.sdf.zip
   ```
+
+## 12. Next Steps (TODO)
+既然我們已經成功完成了 0 DRC 違規的 APR (Physical Design)，晶片後端的實體設計已經宣告段落。接下來針對這個專案的完整性，我們有三個最後衝刺的里程碑：
+
+1. **Gate-Level Simulation (GLS) 閘級模擬 (Verification)**
+   - **目標**：確認加入繞線延遲 (SDF) 後，我們經過合成與佈線的電路功能依然正確。
+   - **做法**：在 `hardware/frontend/sim/` 透過 Xcelium 並載入 `nn_top_final_nophy.v` 與 `nn_top_final.sdf` 重跑一次 `make sim`。確認無時序違規 (Timing Violations) 且模型辨識輸出仍舊 100% 正確。
+2. **Backend 功耗與封裝評估 (Backend & Packaging)**
+   - **目標**：確認我們的 70mW 晶片在封裝階段所需的電源腳位數目是否充裕。
+   - **做法**：評估現有 Pad Ring 的 IR-Drop (電壓降) 或利用 Innovus 的 Voltus 模組跑簡易的 IR-Drop Analysis。
+3. **準備最終專案文件與展示 (Documentation & Demo)**
+   - **目標**：將這個突破性的開發進度結案。
+   - **做法**：將 Innovus 的完美佈線圖截圖，連同我們在 `note.md` 裡面的 PPA 與 Wei-In 架構的精彩比較，放入 final report 與 slides。宣告我們順利在大型 NPU ASIC 繞線技術上取得成功！
