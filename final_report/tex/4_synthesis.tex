@@ -1,0 +1,19 @@
+\section{Logic Synthesis and Optimization}
+\label{sec:synthesis}
+
+Translating the verified RTL into a physical gate-level netlist was performed utilizing Cadence Genus Synthesis Solution, targeting the Nangate 45nm Open Cell Library. However, standard RTL paradigms for neural networks presented significant synthesis challenges that required architectural refactoring.
+
+\subsection{Constant Propagation and ROM Optimization}
+In simulation, it is standard practice to load megabytes of pre-trained weights via Verilog's dynamic \texttt{\$readmemh} system task from external \texttt{.txt} files. However, during ASIC logic synthesis, external run-time files cannot be statically analyzed. This initially resulted in the Cadence Genus synthesizer interpreting the entire weight memory arrays as un-driven (floating) logic, effectively optimizing away the entire neural network datapath into an empty shell.
+
+To resolve this critical synthesis failure, we engineered a custom Python bridge script (\texttt{gen\_npu\_weights.py}). This script parsed the PyTorch outputs and automatically generated a massive SystemVerilog package file (\texttt{weight\_pkg.sv}). Within this package, all 30,000+ fractional weights and biases were declared as hardcoded multidimensional \texttt{parameter} arrays (e.g., \texttt{[LAYER][BANK][ADDR]}). 
+By directly importing this package into the MAC (Multiply-Accumulate) modules and indexing the parameters within the hardware loops, we enabled Genus to perform extreme \textbf{Constant Propagation}. The synthesizer was able to evaluate the static parameters at compile time, completely mapping the weight arrays into highly optimized, dedicated combinational logic gates (ROM-like hardware) rather than instantiating thousands of power-hungry D-Flip-Flops.
+
+\subsection{Synthesis Results (PPA)}
+Driven by rigorous constraint scripts (\texttt{synth.cmd}) specifying a 100~MHz clock target (10ns period), the final optimized netlist yielded excellent Power, Performance, and Area (PPA) metrics:
+\begin{itemize}
+    \item \textbf{Total Area:} 654,006 $\mu m^2$ (consisting of 177,266 standard cells).
+    \item \textbf{Timing Performance:} The design comfortably met the 100~MHz constraint, achieving a massive positive slack of \textbf{+5.044 ns} in setup timing. This indicates that the purely combinational ReLU datapath successfully avoided critical path bottlenecks.
+    \item \textbf{Power Consumption:} The estimated total power post-synthesis was \textbf{84.6 mW}, distributed as 76.9 mW (91\%) dynamic switching power and 7.7 mW (9\%) leakage power.
+\end{itemize}
+These robust synthesis results proved that the architectural decision to avoid Sigmoid LUTs and saturation adders paid immense dividends in standard cell optimization.

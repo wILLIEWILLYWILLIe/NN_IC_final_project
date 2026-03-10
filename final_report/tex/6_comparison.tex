@@ -1,0 +1,33 @@
+\section{Architectural Trade-off Analysis}
+\label{sec:comparison}
+
+To contextualize our design decisions, we drew foundational inspiration and comparative metrics from the baseline SystemVerilog NPU architecture designed by Wei-In Lai \cite{weinnpu} for similar MNIST tasks. We summarize the architectural differences in Table \ref{tab:arch_comparison} and enumerate the distinct trade-offs below.
+
+\begin{table}[ht]
+\centering
+\caption{Architectural Comparison: Baseline vs. Proposed NPU}
+\label{tab:arch_comparison}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Feature} & \textbf{Wei-In's NPU (Baseline)} & \textbf{Our Proposed NPU} \\ \hline
+\textbf{Network Topology} & $784 \to 30 \to 30 \to 10$ & $784 \to 32 \to 16 \to 16 \to 10$ \\ \hline
+\textbf{Datapath Precision} & 16-bit (Q1.15) & 64-bit Accumulator \\ \hline
+\textbf{Overflow Handling} & Saturating Addition Logic & Native Resolution (No Logic) \\ \hline
+\textbf{Activation Function} & Sigmoid (ROM LUT) & ReLU (Multiplexer) \\ \hline
+\textbf{Core Area} & $\sim$358,800 $\mu m^2$ & 654,006 $\mu m^2$ \\ \hline
+\textbf{Max Frequency} & $\sim$238 MHz & $\sim$128.6 MHz \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+\subsection{Trade-off Enumeration}
+\begin{enumerate}
+    \item \textbf{Model Capacity vs. Physical Area:} Our NPU deliberately trades silicon area for learning capacity. By expanding the network parameters and deploying 32 parallel MAC lanes, our design achieves high accuracy ($\sim$97.5\%) on complex non-linear features, resulting in a larger footprint (654,006 $\mu m^2$). Conversely, the baseline's narrow 30-neuron hidden layers restrict its theoretical capacity but benefit from a noticeably smaller physical gate count ($\sim$358,800 $\mu m^2$).
+    
+    \item \textbf{Accumulation and Saturation:} The baseline relies on a strict 16-bit datapath. To prevent overflow during MAC operations, it relies on complex, latency-inducing saturating addition logic. Our design circumvents this fundamentally by physically widening the accumulator bounds to 64-bits midway through the datapath, seamlessly scaling the data down only after the layer calculation is complete.
+    
+    \item \textbf{Activation Implementations (ReLU vs. Sigmoid):} The baseline utilizes the Sigmoid activation function, mandating the synthesis of massive Read-Only Memory (ROM) Look-Up Tables (LUTs) to approximate exponential math. Our strategic shift to the ReLU activation replaces these expensive LUTs with zero-latency digital multiplexers, vastly streamlining the specific combinational paths.
+\end{enumerate}
+
+Ultimately, while the baseline architecture is elegantly suited for severely power-and-area-starved micro-controllers, our NPU structure represents a scalable, higher-capacity edge accelerator capable of robust inference.

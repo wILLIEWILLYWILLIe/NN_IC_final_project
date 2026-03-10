@@ -1,0 +1,15 @@
+\section{Introduction}
+\label{sec:introduction}
+
+The deployment of Artificial Intelligence (AI) algorithms on resource-constrained edge devices has become a critical area of research. While cloud-based AI solutions offer virtually unlimited computational power, they suffer from high latency, privacy concerns, and a strong dependency on network availability. To overcome these limitations, Edge AI—bringing the computation directly to the sensory node—has emerged as a compelling alternative. However, modern Deep Neural Networks (DNNs) are notoriously compute- and memory-intensive, making them difficult to deploy on general-purpose edge microcontrollers. 
+
+This project aims to address these challenges by designing a highly optimized, fully synthesized, and routed 4-layer Neural Processing Unit (NPU) Application-Specific Integrated Circuit (ASIC). Targeted for the Nangate 45nm technology node, this NPU is specifically designed to perform hardware-accelerated inference for the MNIST handwritten digit dataset. 
+
+Our core objective was not just to build a functional RTL model, but to push the design through a rigorous, industry-standard digital backend flow. We focus extensively on the physical realization of the chip, battling and overcoming severe routing congestion challenges inherent to dense, fully-connected neural network topologies. By architecting a scalable MAC (Multiply-Accumulate) array with a wide, robust datapath, we completely eliminated the need for complex arithmetic saturation logic while maintaining over 97.5\% accuracy. 
+
+The successful completion of this project demonstrates a complete ASIC design cycle. Highlights of our final implementation include 100\% layer activation verification coverage, an estimated maximum operating frequency of 128.6 MHz, and a final routed layout with zero Design Rule Check (DRC) violations, proving it is fully ready for tape-out.
+
+\subsection{Architectural Motivation: GPU vs. Dedicated ASIC}
+General Purpose Graphics Processing Units (GPUs) are the standard for AI workloads due to their immense flexibility. However, GPUs rely on \textit{temporal computing}—they feature a shared pool of MAC units and must continuously fetch weights and activations from external memory to feed these units. This creates a severe Von Neumann bottleneck, requiring complex instruction decoding, memory scheduling, and massive memory bandwidth. 
+
+Conversely, our ASIC adopts a \textit{spatial computing} approach. By physically unrolling the 4-layer topology directly into hardwired SystemVerilog logic, data flows seamlessly from layer to layer without requiring instruction decoding or intermediate memory fetching. While this sacrifices the flexibility to run varying model sizes, it drastically lowers the architectural design difficulty and directly addresses the high-latency memory accesses that plague traditional edge accelerators.

@@ -1,0 +1,53 @@
+\documentclass[10pt,journal,compsoc]{IEEEtran}
+
+\usepackage[pdftex]{graphicx}    
+\usepackage{cite}
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\usepackage{fixltx2e}
+\usepackage{xcolor}
+\def\SPSB#1#2{\rlap{\textsuperscript{\textcolor{red}{#1}}}\SB{#2}}
+\def\SP#1{\textsuperscript{\textcolor{red}{#1}}}
+\def\SB#1{\textsubscript{\textcolor{blue}{#1}}}
+\usepackage{amsmath}
+\usepackage[encapsulated]{CJK}
+
+
+% Removed algorithm state
+\begin{CJK}{UTF8}{bkai}
+
+\begin{document}
+
+\title{4-Layer Neural Processing Unit (NPU) ASIC Design\\ \large Logic Synthesis to Physical Routing on Nangate 45nm}
+
+\author{
+    \IEEEauthorblockN{Your Name}\\
+    \IEEEauthorblockA{Your ID}
+}
+
+\markboth{Final Project Report, CE493}%
+{}
+\IEEEtitleabstractindextext{%
+
+\begin{abstract}
+This report details the complete ASIC digital design flow of a hardware-efficient 4-layer Neural Processing Unit (NPU). Synthesized and routed using the Nangate 45nm technology library, the design achieves high accuracy on the MNIST dataset and zero Design Rule Check (DRC) violations. We explore the architectural trade-offs, from wide datapath fixed-point accumulators to ReLU hardware constraints, and discuss the severe physical routing congestion challenges that were successfully overcome to achieve a tape-out ready core running at approximately 128 MHz.
+\end{abstract}
+}
+\maketitle
+\IEEEdisplaynontitleabstractindextext
+\IEEEpeerreviewmaketitle
+
+\input{tex/1_intro}
+\input{tex/2_architecture}
+\input{tex/3_verification}
+\input{tex/4_synthesis}
+\input{tex/5_physical_design}
+\input{tex/6_comparison}
+\input{tex/7_conclusion}
+
+\bibliographystyle{IEEEtran}
+\bibliography{bib}
+
+\end{document}
+\end{CJK}
+ 

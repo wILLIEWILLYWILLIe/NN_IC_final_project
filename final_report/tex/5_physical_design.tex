@@ -1,0 +1,43 @@
+\section{Physical Design \& Routing Optimization}
+\label{sec:physical_design}
+
+The synthesized netlist was imported into Cadence Innovus for Auto Place and Route (APR). While logic synthesis met timing easily due to the pure combinational ReLU and 64-bit adder paths, the physical realization of a fully-connected neural network presented a monumental routing challenge.
+
+\subsection{The Routing Congestion Challenge (Iteration 1)}
+The fundamental architecture of Multilayer Perceptrons (MLPs) dictates massive, dense all-to-all interconnects between adjacent layers (e.g., $32 \to 16 \to 16$ MAC lanes). 
+In our initial APR run, we configured the floorplan for a standard 63.4\% density utilization and restricted the router to use up to Metal 6 (M6). 
+While Placement and Clock Tree Synthesis (CTS) completed successfully with a positive setup slack of +1.356 ns, the Detail Route stage failed catastrophically. The dense web of data movement between the parallel MAC accumulators caused severe localized routing congestion, resulting in \textbf{over 1000 Design Rule Check (DRC) violations} (primarily Metal Shorts and Spacing violations). 
+This iteration proved that the true bottleneck of edge neural network hardware is not always logic gate latency, but physical wire routing congestion.
+
+\subsection{Physical Design Optimization (Iteration 2)}
+To achieve a manufacturable, tape-out ready Graphic Data System (GDSII) layout, we executed a secondary optimized APR script:
+\begin{enumerate}
+    \item \textbf{Density Reduction \& Margin Expansion:} We reduced the core utilization target from 63\% down to aggressively sparse \textbf{50\%}, while expanding the core-to-IO margins to $5\mu m$ on all sides. This granted the placement engine significantly more whitespace to spread out the sprawling MAC logic.
+    \item \textbf{Vertical Routing Unlocking:} We overrode the technology LEF defaults and explicitly instructed the NanoRoute engine to utilize up to \textbf{Metal 9 (M9)}. This provided the vertical escape routing necessary for the dense crossover signals.
+\end{enumerate}
+
+\subsection{Final Layout Results and Physical Metrics}
+Following these critical architectural floorplan adjustments, the final Innovus routing pass succeeded flawlessly, yielding a \textbf{0 DRC Violation} layout. We enumerate the final physical design achievements below:
+\begin{enumerate}
+    \item \textbf{Setup Timing (WNS):} Improved significantly to \textbf{+2.229 ns} (under a 10 ns clock constraint), proving the combinatorial efficiency of our datapaths.
+    \item \textbf{Maximum Frequency:} Back-calculated from the Worst Negative Slack, the chip can theoretically operate at a peak of \textbf{$\sim$128.6 MHz}.
+    \item \textbf{Power Profile:} \textbf{70.22 mW} total power dissipation, with internal switching power actually decreasing slightly due to more direct routing paths compared to the congested Iteration 1.
+    \item \textbf{Design Integrity:} \textbf{0 DRC} and \textbf{0 Antenna} violations, certifying the layout as fully tape-out ready.
+\end{enumerate}
+
+To summarize, Table \ref{tab:physical_summary} presents the final physical parameters of our generated GDSII.
+
+\begin{table}[ht]
+\centering
+\caption{Final Physical Design Summary (Nangate 45nm)}
+\label{tab:physical_summary}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Metric} & \textbf{Our 4-Layer NPU} \\ \hline
+\textbf{Total Area} & 654,006 $\mu m^2$ \\ \hline
+\textbf{Core Utilization} & 50.04\% \\ \hline
+\textbf{Max Frequency} & $\sim$128.6 MHz \\ \hline
+\textbf{Total Power} & 70.22 mW \\ \hline
+\textbf{DRC Violations} & 0 (M9 Routing) \\ \hline
+\end{tabular}
+\end{table}
