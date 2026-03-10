@@ -5,7 +5,7 @@ add wave -noupdate -group "TOP" -position insertpoint sim:/my_uvm_tb/reset
 
 # Interface signals (UVM VIF)
 add wave -noupdate -group "VIF" -position insertpoint sim:/my_uvm_tb/vif/wr_en
-add wave -noupdate -group "VIF" -position insertpoint -radix decimal sim:/my_uvm_tb/vif/din
+add wave -noupdate -group "VIF" -position insertpoint -radix hexadecimal sim:/my_uvm_tb/vif/din
 add wave -noupdate -group "VIF" -position insertpoint sim:/my_uvm_tb/vif/in_full
 add wave -noupdate -group "VIF" -position insertpoint sim:/my_uvm_tb/vif/inference_done
 add wave -noupdate -group "VIF" -position insertpoint -radix unsigned sim:/my_uvm_tb/vif/predicted_class
@@ -13,36 +13,22 @@ add wave -noupdate -group "VIF" -position insertpoint -radix decimal sim:/my_uvm
 
 # DUT FSM State
 add wave -noupdate -group "FSM" -position insertpoint sim:/my_uvm_tb/dut/state
-add wave -noupdate -group "FSM" -position insertpoint -radix unsigned sim:/my_uvm_tb/dut/cnt
-add wave -noupdate -group "FSM" -position insertpoint -radix unsigned sim:/my_uvm_tb/dut/l1_cnt
+add wave -noupdate -group "FSM" -position insertpoint -radix unsigned sim:/my_uvm_tb/dut/img_cnt
+add wave -noupdate -group "FSM" -position insertpoint -radix unsigned sim:/my_uvm_tb/dut/layer_idx
+add wave -noupdate -group "FSM" -position insertpoint -radix unsigned sim:/my_uvm_tb/dut/pass_idx
+add wave -noupdate -group "FSM" -position insertpoint -radix unsigned sim:/my_uvm_tb/dut/in_cnt
+add wave -noupdate -group "FSM" -position insertpoint -radix unsigned sim:/my_uvm_tb/dut/drain_cnt
 
 # Input FIFO
 add wave -noupdate -group "FIFO" -position insertpoint sim:/my_uvm_tb/dut/fifo_empty
 add wave -noupdate -group "FIFO" -position insertpoint sim:/my_uvm_tb/dut/fifo_rd_en
 add wave -noupdate -group "FIFO" -position insertpoint -radix decimal sim:/my_uvm_tb/dut/fifo_dout
-add wave -noupdate -group "FIFO" -position insertpoint -radix decimal sim:/my_uvm_tb/dut/fifo_dout_reg
 
-# Layer 0 Control
-add wave -noupdate -group "L0" -position insertpoint sim:/my_uvm_tb/dut/l0_start
-add wave -noupdate -group "L0" -position insertpoint sim:/my_uvm_tb/dut/l0_valid_in
-add wave -noupdate -group "L0" -position insertpoint -radix decimal sim:/my_uvm_tb/dut/l0_data_in
-
-# Layer 0 Neuron 0 Pipeline
-add wave -noupdate -group "L0_N0_PIPE" -position insertpoint {sim:/my_uvm_tb/dut/u_layer0/gen_neurons[0]/l0/n0/u_n/active}
-add wave -noupdate -group "L0_N0_PIPE" -position insertpoint -radix unsigned {sim:/my_uvm_tb/dut/u_layer0/gen_neurons[0]/l0/n0/u_n/cnt}
-add wave -noupdate -group "L0_N0_PIPE" -position insertpoint {sim:/my_uvm_tb/dut/u_layer0/gen_neurons[0]/l0/n0/u_n/s0_valid}
-add wave -noupdate -group "L0_N0_PIPE" -position insertpoint {sim:/my_uvm_tb/dut/u_layer0/gen_neurons[0]/l0/n0/u_n/s1_valid}
-add wave -noupdate -group "L0_N0_PIPE" -position insertpoint -radix decimal {sim:/my_uvm_tb/dut/u_layer0/gen_neurons[0]/l0/n0/u_n/acc}
-add wave -noupdate -group "L0_N0_PIPE" -position insertpoint {sim:/my_uvm_tb/dut/u_layer0/gen_neurons[0]/l0/n0/u_n/done_pending}
-add wave -noupdate -group "L0_N0_PIPE" -position insertpoint {sim:/my_uvm_tb/dut/u_layer0/gen_neurons[0]/l0/n0/u_n/valid_out}
-
-# Layer 0 Results (after ReLU)
-add wave -noupdate -group "L0_RESULT" -position insertpoint -radix decimal sim:/my_uvm_tb/dut/l0_relu
-
-# Layer 1 Control
-add wave -noupdate -group "L1" -position insertpoint sim:/my_uvm_tb/dut/l1_start
-add wave -noupdate -group "L1" -position insertpoint sim:/my_uvm_tb/dut/l1_valid_in
-add wave -noupdate -group "L1" -position insertpoint -radix decimal sim:/my_uvm_tb/dut/l1_data_in
+# MAC Control
+add wave -noupdate -group "MAC_CTRL" -position insertpoint sim:/my_uvm_tb/dut/mac_start_in
+add wave -noupdate -group "MAC_CTRL" -position insertpoint sim:/my_uvm_tb/dut/mac_valid_in
+add wave -noupdate -group "MAC_CTRL" -position insertpoint sim:/my_uvm_tb/dut/mac_last_in
+add wave -noupdate -group "MAC_CTRL" -position insertpoint sim:/my_uvm_tb/dut/mac_relu_en
 
 # Argmax
 add wave -noupdate -group "ARGMAX" -position insertpoint sim:/my_uvm_tb/dut/argmax_start

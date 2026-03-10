@@ -50,6 +50,13 @@ GLS_SRC  := $(PKG) \
             $(LIB_V) \
             $(SV_DIR)/nn_tb.sv
 
+INNOVUS_DIR := ../../backend/innovus
+GLS_APR_SRC  := $(PKG) \
+            $(W_PKG) \
+            $(INNOVUS_DIR)/nn_top_final_nophy.v \
+            $(LIB_V) \
+            $(SV_DIR)/nn_tb.sv
+
 # -------------------------------------------------------
 .PHONY: sim sim_gui uvm_sim uvm_sim_gui clean test_all gls gls_gui
 
@@ -60,6 +67,17 @@ sim:
 # Gate Level Simulation
 gls:
 	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 -delay_mode zero $(GLS_SRC)"
+
+# Post-Route Gate Level Simulation (with SDF + strict timing checks)
+gls_apr:
+	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 +define+POST_ROUTE -maxdelays $(GLS_APR_SRC)"
+
+# Post-Route Gate Level Simulation (with SDF delays, no setup/hold checks)
+# +define+NTC: tells NangateOpenCellLibrary cells to use conditioned timing
+#              paths, preventing NOTIFIER from corrupting flip-flop outputs
+# +no_notifier: completely suppresses NOTIFIER-driven X propagation in UDPs
+gls_apr_notiming:
+	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 +define+POST_ROUTE +define+NTC +no_notifier -maxdelays -notimingchecks $(GLS_APR_SRC)"
 
 # Gate Level Simulation with GUI
 gls_gui:

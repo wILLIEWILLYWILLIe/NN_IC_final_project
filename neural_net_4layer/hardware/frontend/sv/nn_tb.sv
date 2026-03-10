@@ -50,6 +50,13 @@ module nn_tb;
         .max_score       (max_score)
     );
 
+    `ifdef POST_ROUTE
+    initial begin
+        $sdf_annotate("../../backend/innovus/nn_top_final.sdf", u_dut);
+        $display("SDF Annotation Applied (Post-Route)");
+    end
+    `endif
+
     // ---------------------------------------------------------
     // Input Data
     // ---------------------------------------------------------
@@ -107,6 +114,7 @@ module nn_tb;
         wr_en = 1'b0;
         din   = '0;
         repeat (50) @(posedge clk); // Extended reset for GLS
+        #2; // Deassert reset slightly after the clock edge to avoid Recovery/Removal violations
         reset = 1'b0;
         repeat (10) @(posedge clk);
 
@@ -115,35 +123,59 @@ module nn_tb;
         $display("============================================");
         $display("Loading %0d inputs from %s", NUM_INPUTS, INPUT_FILE);
 
-        // Force wr_clk if it was optimized away/unconnected in netlist
+        // Force FIFO clocks — only needed in RTL mode:
+        //   RTL:  fifo.sv has separate wr_clk/rd_clk ports that need
+        //         to be connected to the testbench clock.
+        //   GLS (POST_ROUTE): Innovus netlist has wr_clk and rd_clk
+        //         properly driven by CTS buffers (CTS_3797).
+        //         Using 'force' here CONFLICTS with CTS outputs,
+        //         causing all downstream logic to resolve to X.
+        `ifndef POST_ROUTE
         force u_dut.u_input_fifo.wr_clk = clk;
         force u_dut.u_input_fifo.rd_clk = clk;
+        `endif
 
         // Monitor inputs/outputs
         fork
+            // Periodic progress monitor (every 100us / 10000 cycles)
+            forever begin
+                #100_000; // 100us
+                $display("[%0t] PROGRESS: wr_en=%b, in_full=%b, inference_done=%b",
+                         $time, wr_en, in_full, inference_done);
+                $display("[%0t] PROGRESS: u_dut.fifo_empty=%b", $time, u_dut.fifo_empty);
+            end
+        join_none
+
+        fork
             forever @(posedge clk) begin
-                if (wr_en) $display("[%0t] DEBUG: wr_en=1, din=%0h, in_full=%b", $time, din, in_full);
-                if (u_dut.fifo_empty === 1'b0) $display("[%0t] DEBUG: FIFO NOT EMPTY", $time);
-                if (u_dut.n_471219) $display("[%0t] DEBUG: FIFO rd_en=1, dout=%0h", $time, u_dut.fifo_dout);
                 if (inference_done) $display("[%0t] DEBUG: inference_done asserted!", $time);
             end
         join_none
 
         // Write all input data into FIFO
-        for (int i = 0; i < NUM_INPUTS; i++) begin
-            while (in_full) @(posedge clk);
-            wr_en <= 1'b1;
-            din   <= $signed(input_data[i]);
+        begin
+            integer full_stall_cnt;
+            full_stall_cnt = 0;
+            for (int i = 0; i < NUM_INPUTS; i++) begin
+                while (in_full) begin
+                    full_stall_cnt++;
+                    @(posedge clk);
+                end
+                wr_en <= 1'b1;
+                din   <= $signed(input_data[i]);
+                @(posedge clk);
+                if (i % 100 == 0)
+                    $display("[%0t] WRITE: item %0d/%0d, full_stalls=%0d, fifo_empty=%b",
+                             $time, i, NUM_INPUTS, full_stall_cnt, u_dut.fifo_empty);
+            end
             @(posedge clk);
+            wr_en <= 1'b0;
+            din   <= '0;
+            $display("[%0t] All inputs written to FIFO. Total full_stalls=%0d", $time, full_stall_cnt);
         end
-        @(posedge clk);
-        wr_en <= 1'b0;
-        din   <= '0;
-
-        $display("All inputs written to FIFO.");
 
         // Wait for inference to complete
-        $display("Waiting for inference...");
+        $display("[%0t] Waiting for inference... fifo_empty=%b", $time, u_dut.fifo_empty);
         wait (inference_done === 1'b1);
         @(posedge clk);
 
@@ -179,7 +211,7 @@ module nn_tb;
 
     // Timeout watchdog
     initial begin
-        #10_000_000;  // 10 ms = 1M cycles
+        #50_000_000;  // 50 ms = 5M cycles (extended for GLS)
         $display("ERROR: Simulation timeout!");
         $finish;
     end

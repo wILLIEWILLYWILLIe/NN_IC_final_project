@@ -6,6 +6,7 @@
 
 \usepackage{fixltx2e}
 \usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
 \def\SPSB#1#2{\rlap{\textsuperscript{\textcolor{red}{#1}}}\SB{#2}}
 \def\SP#1{\textsuperscript{\textcolor{red}{#1}}}
 \def\SB#1{\textsubscript{\textcolor{blue}{#1}}}
@@ -30,7 +31,7 @@
 \IEEEtitleabstractindextext{%
 
 \begin{abstract}
-This report details the complete ASIC digital design flow of a hardware-efficient 4-layer Neural Processing Unit (NPU). Synthesized and routed using the Nangate 45nm technology library, the design achieves high accuracy on the MNIST dataset and zero Design Rule Check (DRC) violations. We explore the architectural trade-offs, from wide datapath fixed-point accumulators to ReLU hardware constraints, and discuss the severe physical routing congestion challenges that were successfully overcome to achieve a tape-out ready core running at approximately 128 MHz.
+This report details the complete ASIC digital design flow of a hardware-efficient 4-layer Neural Processing Unit (NPU). Synthesized and routed using the Nangate 45nm technology library, the design achieves high accuracy on the MNIST dataset and zero Design Rule Check (DRC) violations. We explore the architectural trade-offs, from wide datapath fixed-point accumulators to ReLU hardware constraints, and discuss the severe physical routing congestion challenges that were successfully overcome to achieve a tape-out ready core running at approximately 127.8 MHz with 68.34 mW total power dissipation.
 \end{abstract}
 }
 \maketitle

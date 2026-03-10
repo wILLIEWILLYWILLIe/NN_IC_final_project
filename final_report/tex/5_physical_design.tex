@@ -9,21 +9,31 @@ In our initial APR run, we configured the floorplan for a standard 63.4\% densit
 While Placement and Clock Tree Synthesis (CTS) completed successfully with a positive setup slack of +1.356 ns, the Detail Route stage failed catastrophically. The dense web of data movement between the parallel MAC accumulators caused severe localized routing congestion, resulting in \textbf{over 1000 Design Rule Check (DRC) violations} (primarily Metal Shorts and Spacing violations). 
 This iteration proved that the true bottleneck of edge neural network hardware is not always logic gate latency, but physical wire routing congestion.
 
-\subsection{Physical Design Optimization (Iteration 2)}
-To achieve a manufacturable, tape-out ready Graphic Data System (GDSII) layout, we executed a secondary optimized APR script:
+\subsection{Physical Design Optimization (Iteration 2 \& 3)}
+To achieve a manufacturable, tape-out ready Graphic Data System (GDSII) layout, we executed multiple optimized APR iterations:
 \begin{enumerate}
-    \item \textbf{Density Reduction \& Margin Expansion:} We reduced the core utilization target from 63\% down to aggressively sparse \textbf{50\%}, while expanding the core-to-IO margins to $5\mu m$ on all sides. This granted the placement engine significantly more whitespace to spread out the sprawling MAC logic.
-    \item \textbf{Vertical Routing Unlocking:} We overrode the technology LEF defaults and explicitly instructed the NanoRoute engine to utilize up to \textbf{Metal 9 (M9)}. This provided the vertical escape routing necessary for the dense crossover signals.
+    \item \textbf{Density Reduction \& Margin Expansion:} We reduced the core utilization target from 63\% down to aggressively sparse \textbf{40\%}, while expanding the core-to-IO margins to $5\mu m$ on all sides. This granted the placement engine significantly more whitespace to spread out the sprawling MAC logic.
+    \item \textbf{Vertical Routing Unlocking:} We overrode the technology LEF defaults and explicitly instructed the NanoRoute engine to utilize up to \textbf{Metal 10 (M10)}. This provided the vertical escape routing necessary for the dense crossover signals.
+    \item \textbf{OCV Analysis \& Hold Fixing:} We enabled On-Chip Variation (\texttt{setAnalysisMode -analysisType onChipVariation}) to accurately model process variations across the die. Post-route hold optimization (\texttt{optDesign -postRoute -hold}) was applied to insert delay buffers and fix hold violations, ensuring robustness across PVT corners.
+    \item \textbf{Clock Tree Synthesis:} The CTS engine generated \textbf{1,712 clock buffers} to distribute the 100 MHz clock to \textbf{38,989 register sinks}, achieving balanced skew and transition times across the entire design.
 \end{enumerate}
 
 \subsection{Final Layout Results and Physical Metrics}
-Following these critical architectural floorplan adjustments, the final Innovus routing pass succeeded flawlessly, yielding a \textbf{0 DRC Violation} layout. We enumerate the final physical design achievements below:
+Following these critical architectural floorplan adjustments, the final Innovus routing pass succeeded flawlessly, yielding a \textbf{0 DRC Violation} layout across all 121 verification sub-areas. Fig.~\ref{fig:layout} shows the final routed layout of the NPU chip. We enumerate the final physical design achievements below:
 \begin{enumerate}
-    \item \textbf{Setup Timing (WNS):} Improved significantly to \textbf{+2.229 ns} (under a 10 ns clock constraint), proving the combinatorial efficiency of our datapaths.
-    \item \textbf{Maximum Frequency:} Back-calculated from the Worst Negative Slack, the chip can theoretically operate at a peak of \textbf{$\sim$128.6 MHz}.
-    \item \textbf{Power Profile:} \textbf{70.22 mW} total power dissipation, with internal switching power actually decreasing slightly due to more direct routing paths compared to the congested Iteration 1.
+    \item \textbf{Setup Timing (WNS):} Achieved a positive setup slack of \textbf{+2.173 ns} (under a 10 ns clock constraint), proving the combinatorial efficiency of our datapaths. The critical path runs from the \texttt{in\_cnt\_reg} through the activation RAM address decoding logic to \texttt{act\_rdata\_reg}, arriving in 8.180 ns.
+    \item \textbf{Maximum Frequency:} Back-calculated from the Worst Negative Slack, the chip can theoretically operate at a peak of \textbf{$\sim$127.8 MHz}.
+    \item \textbf{Power Profile:} \textbf{68.34 mW} total power dissipation, broken down as 32.18 mW (47.1\%) internal switching power, 28.21 mW (41.3\%) net switching power, and 7.95 mW (11.6\%) leakage power. The clock tree alone consumes 9.34 mW (13.7\% of total).
     \item \textbf{Design Integrity:} \textbf{0 DRC} and \textbf{0 Antenna} violations, certifying the layout as fully tape-out ready.
+    \item \textbf{Design Scale:} 165,951 standard cell instances connected by 211,117 nets across 10 metal routing layers.
 \end{enumerate}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\columnwidth]{Fig/layout.png}
+    \caption{Final routed layout of the 4-layer NPU in Nangate 45nm. The design uses Metal 1--10 for signal routing and clock distribution. Dense MAC lane clusters are visible as tightly packed orange regions, while the CTS clock tree (cyan traces) distributes the 100 MHz clock to 38,989 register sinks with 1,712 clock buffers.}
+    \label{fig:layout}
+\end{figure}
 
 To summarize, Table \ref{tab:physical_summary} presents the final physical parameters of our generated GDSII.
 
@@ -34,10 +44,15 @@ To summarize, Table \ref{tab:physical_summary} presents the final physical param
 \begin{tabular}{|l|c|}
 \hline
 \textbf{Metric} & \textbf{Our 4-Layer NPU} \\ \hline
-\textbf{Total Area} & 654,006 $\mu m^2$ \\ \hline
-\textbf{Core Utilization} & 50.04\% \\ \hline
-\textbf{Max Frequency} & $\sim$128.6 MHz \\ \hline
-\textbf{Total Power} & 70.22 mW \\ \hline
-\textbf{DRC Violations} & 0 (M9 Routing) \\ \hline
+\textbf{Total Instances} & 165,951 standard cells \\ \hline
+\textbf{Total Nets} & 211,117 \\ \hline
+\textbf{Core Utilization} & 40\% \\ \hline
+\textbf{Routing Layers} & Metal 1 -- Metal 10 \\ \hline
+\textbf{CTS Buffers} & 1,712 (38,989 sinks) \\ \hline
+\textbf{Setup Slack (WNS)} & +2.173 ns \\ \hline
+\textbf{Max Frequency} & $\sim$127.8 MHz \\ \hline
+\textbf{Total Power} & 68.34 mW \\ \hline
+\textbf{Leakage Power} & 7.95 mW (11.6\%) \\ \hline
+\textbf{DRC Violations} & 0 \\ \hline
 \end{tabular}
 \end{table}

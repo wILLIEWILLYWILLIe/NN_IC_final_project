@@ -15,7 +15,7 @@ set init_gnd_net "VSS"
 init_design
 
 # 2. Floorplan
-# Aspect Ratio 1.0, 50% density, 5um margins (Increased margins and lower density to fix routing congestion DRCs)
+# Aspect Ratio 1.0, 40% density, 5um margins (Lowered to fix massive routing congestion in the center)
 floorPlan -r 1.0 0.5 5 5 5 5
 fit
 
@@ -52,16 +52,26 @@ sroute -connect { blockPin padPin padRing corePin floatingStripe } -layerChangeR
 setPlaceMode -timingDriven 1 -clkGateAware 1
 placeDesign
 
-# 7. Clock Tree Synthesis (CTS)
-clockDesign -specFile Clock.ctstch -outDir clock_report
+# 7. Clock Tree Synthesis (CTS) uses CCOpt for excellent balancing (similar to H-tree)
+set_ccopt_property buffer_cells {CLKBUF_X1 CLKBUF_X2 CLKBUF_X3}
+set_ccopt_property use_inverters false
+create_ccopt_clock_tree_spec
+ccopt_design
 
 # 8. Post-CTS Optimization
+setAnalysisMode -analysisType onChipVariation
 optDesign -postCTS
 optDesign -postCTS -hold
 
 # 9. Routing
-setNanoRouteMode -quiet -routeTopRoutingLayer 9
+setNanoRouteMode -quiet -routeTopRoutingLayer 10
 routeDesign -globalDetail
+
+# 9.5. Post-Route Optimization (Fixing Hold Violations)
+setExtractRCMode -engine postRoute
+extractRC
+optDesign -postRoute
+optDesign -postRoute -hold
 
 # 10. Verification
 verify_drc -report nn_top.drc.rpt

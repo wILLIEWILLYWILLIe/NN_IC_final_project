@@ -1,112 +1,4 @@
-# do nn_sim.do
-# ** Warning: (vlib-34) Library already exists at "work".
-# Model Technology ModelSim SE-64 vmap 2020.1 Lib Mapping Utility 2020.01 Jan 28 2020
-# vmap work work 
-# Modifying modelsim.ini
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 15:11:14 on Mar 06,2026
-# vlog -sv ../sv/nn_pkg.sv 
-# -- Compiling package nn_pkg
-# 
-# Top level modules:
-# 	--none--
-# End time: 15:11:14 on Mar 06,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 15:11:14 on Mar 06,2026
-# vlog -sv ../sv/weight_pkg.sv 
-# -- Compiling package weight_pkg
-# -- Importing package nn_pkg
-# 
-# Top level modules:
-# 	--none--
-# End time: 15:11:14 on Mar 06,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 15:11:14 on Mar 06,2026
-# vlog -sv ../sv/fifo.sv 
-# -- Compiling module fifo
-# 
-# Top level modules:
-# 	fifo
-# End time: 15:11:14 on Mar 06,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 15:11:14 on Mar 06,2026
-# vlog -sv ../sv/npu_mac.sv 
-# -- Compiling module mac_cell
-# -- Importing package nn_pkg
-# -- Compiling module mac_lane
-# -- Importing package weight_pkg
-# 
-# Top level modules:
-# 	mac_lane
-# End time: 15:11:14 on Mar 06,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 15:11:14 on Mar 06,2026
-# vlog -sv ../sv/argmax.sv 
-# -- Compiling module argmax
-# -- Importing package nn_pkg
-# ** Warning: ../sv/argmax.sv(16): (vlog-13314) Defaulting port 'scores' kind to 'var' rather than 'wire' due to default compile option setting of -svinputport=relaxed.
-# 
-# Top level modules:
-# 	argmax
-# End time: 15:11:14 on Mar 06,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 1
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 15:11:14 on Mar 06,2026
-# vlog -sv ../sv/nn_top.sv 
-# -- Compiling module nn_top
-# -- Importing package nn_pkg
-# 
-# Top level modules:
-# 	nn_top
-# End time: 15:11:14 on Mar 06,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 15:11:14 on Mar 06,2026
-# vlog -sv "+incdir+../uvm" ../uvm/my_uvm_pkg.sv 
-# -- Compiling package my_uvm_pkg
-# -- Importing package mtiUvm.uvm_pkg (uvm-1.1d Built-in)
-# -- Importing package nn_pkg
-# ** Note: (vlog-2286) ../uvm/my_uvm_pkg.sv(10): Using implicit +incdir+/vol/mentor/modelsim-2020.1/modeltech/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
-# 
-# Top level modules:
-# 	--none--
-# End time: 15:11:15 on Mar 06,2026, Elapsed time: 0:00:01
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 15:11:15 on Mar 06,2026
-# vlog -sv "+incdir+../uvm" ../uvm/nn_if.sv 
-# -- Compiling interface nn_if
-# -- Importing package nn_pkg
-# 
-# Top level modules:
-# 	--none--
-# End time: 15:11:15 on Mar 06,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
-# Start time: 15:11:15 on Mar 06,2026
-# vlog -sv "+incdir+../uvm" ../uvm/my_uvm_tb.sv 
-# ** Note: (vlog-2286) ../uvm/my_uvm_tb.sv(4): Using implicit +incdir+/vol/mentor/modelsim-2020.1/modeltech/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
-# -- Compiling package my_uvm_tb_sv_unit
-# -- Importing package mtiUvm.uvm_pkg (uvm-1.1d Built-in)
-# -- Importing package my_uvm_pkg
-# -- Importing package nn_pkg
-# -- Compiling module my_uvm_tb
-# 
-# Top level modules:
-# 	my_uvm_tb
-# End time: 15:11:15 on Mar 06,2026, Elapsed time: 0:00:00
-# Errors: 0, Warnings: 0
-# vsim -voptargs=""+acc"" my_uvm_tb "+UVM_TESTNAME=my_uvm_test" 
-# Start time: 15:11:15 on Mar 06,2026
-# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
-# ** Note: (vopt-143) Recognized 1 FSM in module "nn_top(fast)".
-# ** Warning: ../sv/argmax.sv(16): (vopt-13314) Defaulting port 'scores' kind to 'var' rather than 'wire' due to default compile option setting of -svinputport=relaxed.
-# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
-# //  ModelSim SE-64 2020.1 Jan 28 2020 Linux 4.18.0-553.107.1.el8_10.x86_64
+# //  ModelSim SE-64 2020.1 Jan 28 2020 Linux 4.18.0-553.89.1.el8_10.x86_64
 # //
 # //  Copyright 1991-2020 Mentor Graphics Corporation
 # //  All Rights Reserved.
@@ -119,7 +11,113 @@
 # //  is prohibited from disclosure under the Trade Secrets Act,
 # //  18 U.S.C. Section 1905.
 # //
-# ** Warning: License feature 'msimhdlsim' will expire in 12 days.
+# ** Warning: License feature 'msimviewer' will expire in 8 days.
+# do nn_sim.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim SE-64 vmap 2020.1 Lib Mapping Utility 2020.01 Jan 28 2020
+# vmap work work 
+# Modifying modelsim.ini
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 15:50:30 on Mar 10,2026
+# vlog -reportprogress 300 -sv ../sv/nn_pkg.sv 
+# -- Compiling package nn_pkg
+# 
+# Top level modules:
+# 	--none--
+# End time: 15:50:30 on Mar 10,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 15:50:30 on Mar 10,2026
+# vlog -reportprogress 300 -sv ../sv/weight_pkg.sv 
+# -- Compiling package weight_pkg
+# -- Importing package nn_pkg
+# 
+# Top level modules:
+# 	--none--
+# End time: 15:50:30 on Mar 10,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 15:50:30 on Mar 10,2026
+# vlog -reportprogress 300 -sv ../sv/fifo.sv 
+# -- Compiling module fifo
+# 
+# Top level modules:
+# 	fifo
+# End time: 15:50:30 on Mar 10,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 15:50:30 on Mar 10,2026
+# vlog -reportprogress 300 -sv ../sv/npu_mac.sv 
+# -- Compiling module mac_cell
+# -- Importing package nn_pkg
+# -- Compiling module mac_lane
+# -- Importing package weight_pkg
+# 
+# Top level modules:
+# 	mac_lane
+# End time: 15:50:31 on Mar 10,2026, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 15:50:31 on Mar 10,2026
+# vlog -reportprogress 300 -sv ../sv/argmax.sv 
+# -- Compiling module argmax
+# -- Importing package nn_pkg
+# ** Warning: ../sv/argmax.sv(16): (vlog-13314) Defaulting port 'scores' kind to 'var' rather than 'wire' due to default compile option setting of -svinputport=relaxed.
+# 
+# Top level modules:
+# 	argmax
+# End time: 15:50:31 on Mar 10,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 1
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 15:50:31 on Mar 10,2026
+# vlog -reportprogress 300 -sv ../sv/nn_top.sv 
+# -- Compiling module nn_top
+# -- Importing package nn_pkg
+# 
+# Top level modules:
+# 	nn_top
+# End time: 15:50:31 on Mar 10,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 15:50:31 on Mar 10,2026
+# vlog -reportprogress 300 -sv "+incdir+../uvm" ../uvm/my_uvm_pkg.sv 
+# -- Compiling package my_uvm_pkg
+# -- Importing package mtiUvm.uvm_pkg (uvm-1.1d Built-in)
+# -- Importing package nn_pkg
+# ** Note: (vlog-2286) ../uvm/my_uvm_pkg.sv(10): Using implicit +incdir+/vol/mentor/modelsim-2020.1/modeltech/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
+# 
+# Top level modules:
+# 	--none--
+# End time: 15:50:31 on Mar 10,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 15:50:31 on Mar 10,2026
+# vlog -reportprogress 300 -sv "+incdir+../uvm" ../uvm/nn_if.sv 
+# -- Compiling interface nn_if
+# -- Importing package nn_pkg
+# 
+# Top level modules:
+# 	--none--
+# End time: 15:50:31 on Mar 10,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim SE-64 vlog 2020.1 Compiler 2020.01 Jan 28 2020
+# Start time: 15:50:31 on Mar 10,2026
+# vlog -reportprogress 300 -sv "+incdir+../uvm" ../uvm/my_uvm_tb.sv 
+# ** Note: (vlog-2286) ../uvm/my_uvm_tb.sv(4): Using implicit +incdir+/vol/mentor/modelsim-2020.1/modeltech/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
+# -- Compiling package my_uvm_tb_sv_unit
+# -- Importing package mtiUvm.uvm_pkg (uvm-1.1d Built-in)
+# -- Importing package my_uvm_pkg
+# -- Importing package nn_pkg
+# -- Compiling module my_uvm_tb
+# 
+# Top level modules:
+# 	my_uvm_tb
+# End time: 15:50:32 on Mar 10,2026, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+# vsim -voptargs=""+acc"" my_uvm_tb "+UVM_TESTNAME=my_uvm_test" 
+# Start time: 15:50:32 on Mar 10,2026
+# ** Note: (vsim-8009) Loading existing optimized design _opt
+# ** Warning: License feature 'msimhdlsim' will expire in 8 days.
 # Loading sv_std.std
 # Loading work.nn_if(fast)
 # Loading work.nn_pkg(fast)
@@ -136,7 +134,9 @@
 # Loading work.mac_cell(fast)
 # Loading work.argmax(fast)
 # Loading /vol/mentor/modelsim-2020.1/modeltech/uvm-1.1d/linux_x86_64/uvm_dpi.so
-# ** Warning: License feature 'svverification' will expire in 12 days.
+# ** Warning: License feature 'svverification' will expire in 8 days.
+# ** Warning: License feature 'msimhdlsim' will expire in 8 days.
+# ** Warning: License feature 'svverification' will expire in 8 days.
 # ----------------------------------------------------------------
 # UVM-1.1d
 # (C) 2007-2013 Mentor Graphics Corporation
@@ -197,5 +197,10 @@
 # [TEST_DONE]     1
 # ** Note: $finish    : /vol/mentor/modelsim-2020.1/modeltech/linux_x86_64/../verilog_src/uvm-1.1d/src/base/uvm_root.svh(430)
 #    Time: 207986 ns  Iteration: 54  Instance: /my_uvm_tb
-# End time: 15:11:18 on Mar 06,2026, Elapsed time: 0:00:03
-# Errors: 0, Warnings: 1
+# 1
+# Break in Task uvm_pkg/uvm_root::run_test at /vol/mentor/modelsim-2020.1/modeltech/linux_x86_64/../verilog_src/uvm-1.1d/src/base/uvm_root.svh line 430
+# 0 ps
+# 218385300 ps
+# End time: 16:12:12 on Mar 10,2026, Elapsed time: 0:21:40
+# Errors: 0, Warnings: 0
+# ** Warning: License feature 'svverification' will expire in 8 days.
