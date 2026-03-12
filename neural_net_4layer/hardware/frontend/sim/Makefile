@@ -64,20 +64,30 @@ GLS_APR_SRC  := $(PKG) \
 sim:
 	xrun $(XFLAGS) $(ALL_SRC)
 
-# Gate Level Simulation
+# Gate Level Simulation (functional, zero-delay, no timing checks)
+# -delay_mode zero: zeroes all path delays
+# -notimingchecks: suppresses $setuphold/$recovery/$width NOTIFIER toggling
+# -input gls_init.tcl: forces all uninitialized FFs to 0 at T=0
 gls:
-	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 -delay_mode zero $(GLS_SRC)"
+	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 -delay_mode zero -notimingchecks -input gls_init.tcl $(GLS_SRC)" 
+
+# Gate Level Simulation with Unit Delays (to check for basic race conditions)
+gls_delay:
+	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 -input gls_init.tcl $(GLS_SRC)" 
 
 # Post-Route Gate Level Simulation (with SDF + strict timing checks)
 gls_apr:
 	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 +define+POST_ROUTE -maxdelays $(GLS_APR_SRC)"
 
-# Post-Route Gate Level Simulation (with SDF delays, no setup/hold checks)
+# Post-Route Gate Level Simulation (functional, zero-delay)
+# +delay_mode_zero: removes all SDF delays for purely functional GLS
+#   This avoids NOTIFIER X-propagation in NangateOpenCellLibrary scan FFs
 # +define+NTC: tells NangateOpenCellLibrary cells to use conditioned timing
 #              paths, preventing NOTIFIER from corrupting flip-flop outputs
 # +no_notifier: completely suppresses NOTIFIER-driven X propagation in UDPs
+# 	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 +define+POST_ROUTE +define+NTC +no_notifier -maxdelays -notimingchecks $(GLS_APR_SRC)"
 gls_apr_notiming:
-	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 +define+POST_ROUTE +define+NTC +no_notifier -maxdelays -notimingchecks $(GLS_APR_SRC)"
+	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 +define+POST_ROUTE +delay_mode_zero -notimingchecks $(GLS_APR_SRC)"
 
 # Gate Level Simulation with GUI
 gls_gui:

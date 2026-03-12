@@ -57,6 +57,37 @@ module nn_tb;
     end
     `endif
 
+    `ifdef POST_ROUTE
+    initial begin
+        $display("======= GLS DEBUG TRACKING =======");
+        $monitor("Time=%0t RN=%b CK=%b Q=%b NOTIFIER=%b \nstate=%b%b%b%b mac_valid_out0=%b", 
+            $time, 
+            u_dut.\gen_mac_lanes[0].u_lane_u_mac .FE_OFN124_FE_DBTN52_reset,
+            u_dut.\gen_mac_lanes[0].u_lane_u_mac .clk_clone17,
+            u_dut.\gen_mac_lanes[0].u_lane_u_mac .valid_out_reg.Q,
+            u_dut.\gen_mac_lanes[0].u_lane_u_mac .valid_out_reg.NOTIFIER,
+            u_dut.state[3], u_dut.state[2], u_dut.state[1], u_dut.state[0],
+            u_dut.FE_OFN1166_mac_valid_out_0
+            );
+    end
+    `endif
+
+    // Dump waveforms
+    // initial begin
+    //     $shm_open("waves.shm");
+    //     $shm_probe("AC");
+    // end
+
+    // GLS Debug: trace key signals to find x-propagation source
+    `ifndef POST_ROUTE
+    initial begin
+        $timeformat(-9, 0, "ns", 10);
+        $monitor("T=%0t rst=%b wr_en=%b fifo_empty=%b in_full=%b inf_done=%b state=%b",
+            $time, reset, wr_en, u_dut.fifo_empty, in_full, inference_done,
+            u_dut.state);
+    end
+    `endif
+
     // ---------------------------------------------------------
     // Input Data
     // ---------------------------------------------------------
@@ -123,17 +154,8 @@ module nn_tb;
         $display("============================================");
         $display("Loading %0d inputs from %s", NUM_INPUTS, INPUT_FILE);
 
-        // Force FIFO clocks — only needed in RTL mode:
-        //   RTL:  fifo.sv has separate wr_clk/rd_clk ports that need
-        //         to be connected to the testbench clock.
-        //   GLS (POST_ROUTE): Innovus netlist has wr_clk and rd_clk
-        //         properly driven by CTS buffers (CTS_3797).
-        //         Using 'force' here CONFLICTS with CTS outputs,
-        //         causing all downstream logic to resolve to X.
-        `ifndef POST_ROUTE
-        force u_dut.u_input_fifo.wr_clk = clk;
-        force u_dut.u_input_fifo.rd_clk = clk;
-        `endif
+        // FIFO clock forcing removed — FIFO now uses single clk port
+        // (no separate wr_clk/rd_clk needed)
 
         // Monitor inputs/outputs
         fork

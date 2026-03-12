@@ -27,6 +27,7 @@ read_sdc ./constraints.sdc
 # Preserve FSM and key control signals for GLS visibility/debugging
 # Use standard 'preserve' attribute on instances
 set_db [get_db insts *u_input_fifo] .preserve true
+set_db [get_db insts *u_input_fifo] .boundary_opto false
 set_db [get_db insts *u_argmax] .preserve true
 
 syn_generic
