@@ -1,5 +1,9 @@
 # MNIST 4-Layer NPU (16-bit Q12 TDM Architecture)
 
+[![SystemVerilog](https://img.shields.io/badge/Language-SystemVerilog-blue.svg)](https://en.wikipedia.org/wiki/SystemVerilog)
+[![ASIC-Flow](https://img.shields.io/badge/Flow-ASIC%20Design-green.svg)]()
+[![Backend-Ready](https://img.shields.io/badge/Status-GDSII%20Ready-orange.svg)]()
+
 This repository contains a 4-layer Neural Network Processor (NPU) implementation for MNIST digit classification, optimized for ASIC synthesis.
 
 ## Architecture Overview
@@ -17,6 +21,16 @@ Instead of `$readmemh`, we use a SystemVerilog package (`weight_pkg.sv`) contain
 - **Register Merging**: Massive reduction in area by sharing common weight patterns.
 
 ### 2. Instruction & Usage
+### 2. Instruction & Usage
+- **Documentation & Reports**:
+  - [**Final Project Report (PDF)**](final_report/CE499_Project_Report_Winter.pdf)
+  - [**General Project Notes**](NOTES.md)
+  - [**Innovus Design Log/Notes**](neural_net_4layer/hardware/backend/innovus/note.md)
+- **Folder Navigation**:
+  - [**RTL & Simulation**](neural_net_4layer/hardware/frontend/)
+  - [**Synthesis (Genus)**](neural_net_4layer/hardware/backend/genus/)
+  - [**Physical Design (Innovus)**](neural_net_4layer/hardware/backend/innovus/)
+
 - **Weight Generation**: 
   ```bash
   python3 software/gen_npu_weights.py  # Generates weight_pkg.sv
@@ -72,7 +86,8 @@ Final **Post-Route** (Iteration 3) results after Place & Route in Innovus:
 | **Routing Layers** | Metal 1 to Metal 9 |
 
 ### 3. Final Physical Layout
-![Final GDS Layout](final_report/Fig/final_layout.jpg)
+<img src="final_report/Fig/final_layout.jpg" width="500" alt="Final GDS Layout">
+
 *Final Place & Route result from Cadence Innovus (Silicon Ready).*
 
 ## Current Progress: Gate-Level Simulation (GLS)
