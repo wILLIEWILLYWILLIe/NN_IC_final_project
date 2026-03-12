@@ -21,11 +21,11 @@ To achieve a manufacturable, tape-out ready Graphic Data System (GDSII) layout, 
 \subsection{Final Layout Results and Physical Metrics}
 Following these critical architectural floorplan adjustments, the final Innovus routing pass succeeded flawlessly, yielding a \textbf{0 DRC Violation} layout across all 121 verification sub-areas. Fig.~\ref{fig:layout} shows the final routed layout of the NPU chip. We enumerate the final physical design achievements below:
 \begin{enumerate}
-    \item \textbf{Setup Timing (WNS):} Achieved a positive setup slack of \textbf{+2.173 ns} (under a 10 ns clock constraint), proving the combinatorial efficiency of our datapaths. The critical path runs from the \texttt{in\_cnt\_reg} through the activation RAM address decoding logic to \texttt{act\_rdata\_reg}, arriving in 8.180 ns.
-    \item \textbf{Maximum Frequency:} Back-calculated from the Worst Negative Slack, the chip can theoretically operate at a peak of \textbf{$\sim$127.8 MHz}.
-    \item \textbf{Power Profile:} \textbf{68.34 mW} total power dissipation, broken down as 32.18 mW (47.1\%) internal switching power, 28.21 mW (41.3\%) net switching power, and 7.95 mW (11.6\%) leakage power. The clock tree alone consumes 9.34 mW (13.7\% of total).
+    \item \textbf{Setup Timing (WNS):} Achieved a positive setup slack of \textbf{+1.214 ns} (under a 10 ns clock constraint), proving the combinatorial efficiency of our datapaths.
+    \item \textbf{Maximum Frequency:} Back-calculated from the Worst Negative Slack, the chip can theoretically operate at a peak of \textbf{$\sim$113.8 MHz}.
+    \item \textbf{Power Profile:} \textbf{69.27 mW} total power dissipation, broken down as 32.54 mW (47.0\%) internal power, 28.53 mW (41.2\%) switching power, and 8.20 mW (11.8\%) leakage power.
     \item \textbf{Design Integrity:} \textbf{0 DRC} and \textbf{0 Antenna} violations, certifying the layout as fully tape-out ready.
-    \item \textbf{Design Scale:} 165,951 standard cell instances connected by 211,117 nets across 10 metal routing layers.
+    \item \textbf{Design Scale:} 168,392 standard cell instances connected by 213,774 nets across 9 metal routing layers.
 \end{enumerate}
 
 \begin{figure}[ht]
@@ -44,15 +44,15 @@ To summarize, Table \ref{tab:physical_summary} presents the final physical param
 \begin{tabular}{|l|c|}
 \hline
 \textbf{Metric} & \textbf{Our 4-Layer NPU} \\ \hline
-\textbf{Total Instances} & 165,951 standard cells \\ \hline
-\textbf{Total Nets} & 211,117 \\ \hline
-\textbf{Core Utilization} & 40\% \\ \hline
-\textbf{Routing Layers} & Metal 1 -- Metal 10 \\ \hline
+\textbf{Total Instances} & 168,392 standard cells \\ \hline
+\textbf{Total Nets} & 213,774 \\ \hline
+\textbf{Core Utilization} & 50.14\% \\ \hline
+\textbf{Routing Layers} & Metal 1 -- Metal 9 \\ \hline
 \textbf{CTS Buffers} & 1,712 (38,989 sinks) \\ \hline
-\textbf{Setup Slack (WNS)} & +2.173 ns \\ \hline
-\textbf{Max Frequency} & $\sim$127.8 MHz \\ \hline
-\textbf{Total Power} & 68.34 mW \\ \hline
-\textbf{Leakage Power} & 7.95 mW (11.6\%) \\ \hline
+\textbf{Setup Slack (WNS)} & +1.214 ns \\ \hline
+\textbf{Max Frequency} & $\sim$113.8 MHz \\ \hline
+\textbf{Total Power} & 69.27 mW \\ \hline
+\textbf{Leakage Power} & 8.20 mW (11.8\%) \\ \hline
 \textbf{DRC Violations} & 0 \\ \hline
 \end{tabular}
 \end{table}

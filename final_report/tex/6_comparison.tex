@@ -7,7 +7,6 @@ To contextualize our design decisions, we drew foundational inspiration and comp
 \centering
 \caption{Architectural Comparison: Baseline vs. Proposed NPU}
 \label{tab:arch_comparison}
-\resizebox{\columnwidth}{!}{%
 \begin{tabular}{|l|c|c|}
 \hline
 \textbf{Feature} & \textbf{Wei-In's NPU (Baseline)} & \textbf{Our Proposed NPU} \\ \hline
@@ -15,10 +14,9 @@ To contextualize our design decisions, we drew foundational inspiration and comp
 \textbf{Datapath Precision} & 16-bit (Q1.15) & 64-bit Accumulator \\ \hline
 \textbf{Overflow Handling} & Saturating Addition Logic & Native Resolution (No Logic) \\ \hline
 \textbf{Activation Function} & Sigmoid (ROM LUT) & ReLU (Multiplexer) \\ \hline
-\textbf{Core Area} & $\sim$358,800 $\mu m^2$ & 654,006 $\mu m^2$ \\ \hline
-\textbf{Max Frequency} & $\sim$238 MHz & $\sim$127.8 MHz \\ \hline
-\end{tabular}%
-}
+\textbf{Core Area} & $\sim$358,800 $\mu m^2$ & 678,599 $\mu m^2$ \\ \hline
+\textbf{Max Frequency} & $\sim$238 MHz & $\sim$113.8 MHz \\ \hline
+\end{tabular}
 \end{table}
 
 \subsection{Trade-off Enumeration}

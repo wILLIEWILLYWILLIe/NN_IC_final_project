@@ -12,8 +12,8 @@ By directly importing this package into the MAC (Multiply-Accumulate) modules an
 \subsection{Synthesis Results (PPA)}
 Driven by rigorous constraint scripts (\texttt{synth.cmd}) specifying a 100~MHz clock target (10ns period), the final optimized netlist yielded excellent Power, Performance, and Area (PPA) metrics:
 \begin{itemize}
-    \item \textbf{Total Area:} 654,006 $\mu m^2$ (consisting of 177,266 standard cells).
-    \item \textbf{Timing Performance:} The design comfortably met the 100~MHz constraint, achieving a massive positive slack of \textbf{+5.044 ns} in setup timing. This indicates that the purely combinational ReLU datapath successfully avoided critical path bottlenecks.
-    \item \textbf{Power Consumption:} The estimated total power post-synthesis was \textbf{84.6 mW}, distributed as 76.9 mW (91\%) dynamic switching power and 7.7 mW (9\%) leakage power.
+    \item \textbf{Total Area:} 678,599 $\mu m^2$ (consisting of 179,529 standard cells).
+    \item \textbf{Timing Performance:} The design comfortably met the 100~MHz constraint, achieving a massive positive slack of \textbf{+5.195 ns} in setup timing. This indicates that the purely combinational ReLU datapath successfully avoided critical path bottlenecks.
+    \item \textbf{Power Consumption:} The estimated total power post-synthesis was \textbf{86.6 mW}, distributed as 78.85 mW (91\%) dynamic switching power and 7.74 mW (9\%) leakage power.
 \end{itemize}
 These robust synthesis results proved that the architectural decision to avoid Sigmoid LUTs and saturation adders paid immense dividends in standard cell optimization.
