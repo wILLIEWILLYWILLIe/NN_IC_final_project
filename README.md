@@ -1,4 +1,4 @@
-# MNIST 4-Layer NPU (16-bit Q12 TDM Architecture)
+# MNIST-NPU-ASIC: 16-bit Q12 TDM Architecture
 
 [![SystemVerilog](https://img.shields.io/badge/Language-SystemVerilog-blue.svg)](https://en.wikipedia.org/wiki/SystemVerilog)
 [![ASIC-Flow](https://img.shields.io/badge/Flow-ASIC%20Design-green.svg)]()
