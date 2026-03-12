@@ -24,7 +24,7 @@ module nn_tb;
     logic clk = 0;
     always #5 clk = ~clk;  // 100 MHz (10 ns period)
 
-    logic reset;
+    logic reset = 1;
 
     // ---------------------------------------------------------
     // DUT signals
@@ -60,14 +60,16 @@ module nn_tb;
     `ifdef POST_ROUTE
     initial begin
         $display("======= GLS DEBUG TRACKING =======");
-        $monitor("Time=%0t RN=%b CK=%b Q=%b NOTIFIER=%b \nstate=%b%b%b%b mac_valid_out0=%b", 
+        // Note: Escaped names in netlist usually end with a space.
+        // We use individual state register bits because the vector 'state' is disintegrated.
+        $monitor("Time=%0t RN=%b CK=%b state=%b%b%b mac_valid_out0=%b", 
             $time, 
-            u_dut.\gen_mac_lanes[0].u_lane_u_mac .FE_OFN124_FE_DBTN52_reset,
-            u_dut.\gen_mac_lanes[0].u_lane_u_mac .clk_clone17,
-            u_dut.\gen_mac_lanes[0].u_lane_u_mac .valid_out_reg.Q,
-            u_dut.\gen_mac_lanes[0].u_lane_u_mac .valid_out_reg.NOTIFIER,
-            u_dut.state[3], u_dut.state[2], u_dut.state[1], u_dut.state[0],
-            u_dut.FE_OFN1166_mac_valid_out_0
+            u_dut.\state_reg[0] .RN, // Probe a known reset net
+            u_dut.\state_reg[0] .CK, // Probe a known clock net
+            u_dut.\state_reg[2] .Q, 
+            u_dut.\state_reg[1] .Q, 
+            u_dut.\state_reg[0] .Q,
+            u_dut.\mac_valid_out[0] 
             );
     end
     `endif

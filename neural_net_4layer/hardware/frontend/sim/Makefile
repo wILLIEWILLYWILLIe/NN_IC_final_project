@@ -12,7 +12,7 @@
 SV_DIR   := ../sv
 UVM_DIR  := ../uvm
 
-XFLAGS   := -sv -access +rwc -timescale 1ns/1ps -64bit
+XFLAGS   := -sv -access +rwc -timescale 1ns/1ps -64bit +xminitialize+0
 UVM_XFLAGS := -sv -uvm -access +rwc -timescale 1ns/1ps -64bit -coverage all -covoverwrite +incdir+$(UVM_DIR)
 
 # Package
@@ -76,8 +76,9 @@ gls_delay:
 	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 -input gls_init.tcl $(GLS_SRC)" 
 
 # Post-Route Gate Level Simulation (with SDF + strict timing checks)
+# +define+NTC and +no_notifier prevent NOTIFIER from corrupting flip-flop outputs
 gls_apr:
-	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 +define+POST_ROUTE -maxdelays $(GLS_APR_SRC)"
+	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) +define+POST_ROUTE +define+NTC +define+RECREM +no_notifier -maxdelays -pulse_r 0 -pulse_e 0 -sdf_verbose -input gls_init.tcl $(GLS_APR_SRC)"
 
 # Post-Route Gate Level Simulation (functional, zero-delay)
 # +delay_mode_zero: removes all SDF delays for purely functional GLS
@@ -87,7 +88,7 @@ gls_apr:
 # +no_notifier: completely suppresses NOTIFIER-driven X propagation in UDPs
 # 	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 +define+POST_ROUTE +define+NTC +no_notifier -maxdelays -notimingchecks $(GLS_APR_SRC)"
 gls_apr_notiming:
-	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 0 +define+POST_ROUTE +delay_mode_zero -notimingchecks $(GLS_APR_SRC)"
+	tcsh -c "source /vol/ece303/genus_tutorial/cadence.env && xrun $(XFLAGS) -warnmax 1000 +define+POST_ROUTE +delay_mode_zero -notimingchecks $(GLS_APR_SRC)"
 
 # Gate Level Simulation with GUI
 gls_gui:

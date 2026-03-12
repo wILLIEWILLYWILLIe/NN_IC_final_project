@@ -1,5 +1,5 @@
 catch { setDesignMode -process 45 }
-catch { setAnalysisMode -analysisType single }
+catch { setAnalysisMode -analysisType onChipVariation }
 catch { setAnalysisMode -clkSrcPath true }
 catch { setAnalysisMode -clockPropagation sdcControl }
 catch { setAnalysisMode -virtualIPO false }
@@ -7,16 +7,23 @@ catch { setOptMode -activeHoldViews { an } }
 catch { setOptMode -activeSetupViews { an } }
 catch { setOptMode -autoHoldViews { an } }
 catch { setOptMode -autoSetupViews { an} }
+catch { setOptMode -deleteInst true }
 catch { setOptMode -drcMargin 0 }
 catch { setOptMode -effort high }
 catch { setOptMode -preserveAllSequential false }
 catch { setOptMode -setupTargetSlack 0 }
-setExtractRCMode  -engine preRoute -total_c_th 5 -relative_c_th 0.03 -coupling_c_th 3
+setExtractRCMode  -engine postRoute -total_c_th 5 -relative_c_th 0.03 -coupling_c_th 3 -minNetTermNrToBeInMem 50
 catch { setCTSMode -moveGateLimit 25 }
+catch {setNanoRouteMode -quiet -drouteAntennaFactor 1.000000}
+catch {setNanoRouteMode -quiet -droutePostRouteSpreadWire "false"}
+catch {setNanoRouteMode -quiet -drouteStartIteration 0}
 catch {setNanoRouteMode -quiet -drouteUseMinSpacingForBlockage auto}
 catch {setNanoRouteMode -quiet -grouteExpTdStdDelay 7.800000}
+catch {setNanoRouteMode -quiet -routeExpPreserveConstraints true}
+catch {setNanoRouteMode -quiet -routeExpSignatureEco false}
 catch {setNanoRouteMode -quiet -routeStrictlyHonorNonDefaultRule "false"}
-catch {setNanoRouteMode -quiet -routeTopRoutingLayer 9}
+catch {setNanoRouteMode -quiet -routeTopRoutingLayer 10}
+catch {setNanoRouteMode -quiet -routeWithSiPostRouteFix false}
 
 catch { setPlaceMode -place_global_clock_gate_aware true }
 catch { setPlaceMode -timingDriven true }
@@ -26,6 +33,10 @@ catch { setDelayCalMode -enable_high_fanout true }
 catch { setDelayCalMode -eng_copyNetPropToNewNet true }
 catch { setDelayCalMode -engine aae }
 catch { setDelayCalMode -ignoreNetLoad false }
+catch { setDelayCalMode -SIAware true }
 catch { setTrialRouteMode -handlePreroute true }
 catch { setTrialRouteMode -keepMarkedOptRoutes true }
+catch { setHierMode -disableArt false }
+catch { setHierMode -reportPostRouteArtTiming false }
+catch { setHierMode -trialRouteHonorReadOnly false }
 catch { setSIMode -separate_delta_delay_on_data true }

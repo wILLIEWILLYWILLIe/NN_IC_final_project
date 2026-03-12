@@ -71,6 +71,10 @@ Final **Post-Route** (Iteration 3) results after Place & Route in Innovus:
 | **DRC Violations** | **0 (Clean)** |
 | **Routing Layers** | Metal 1 to Metal 9 |
 
+### 3. Final Physical Layout
+![Final GDS Layout](final_report/Fig/final_layout.jpg)
+*Final Place & Route result from Cadence Innovus (Silicon Ready).*
+
 ## Current Progress: Gate-Level Simulation (GLS)
 1. **Synthesis Netlist (Genus)**:
    - [x] **Functional & Delay Simulation**: **PASSED** (Both zero-delay and unit-delay modes).
