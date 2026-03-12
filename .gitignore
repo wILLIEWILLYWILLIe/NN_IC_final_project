@@ -41,3 +41,4 @@ neural_net_4layer/hardware/frontend/sim/xcelium.d/*
 #*.rpt
 timingReports/
 clock_report/
+./neural_net_4layer/hardware/backend/innovus/.nn*
